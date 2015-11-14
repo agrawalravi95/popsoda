@@ -1,8 +1,13 @@
-angular.module('starter.controllers', [])
+angular.module('popsoda.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
+.controller('TabSlideCtrl', function($scope, $ionicSlideBoxDelegate, $state) {
+      // $state.go("/home");
+}) 
 
-.controller('ChatsCtrl', function($scope, Chats) {
+.controller('HomeCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
+})
+
+.controller('TrendingCtrl', function($scope, Chats, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -17,11 +22,26 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+.controller('ChatDetailCtrl', function($scope, $stateParams, Chats, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
+  
   $scope.chat = Chats.get($stateParams.chatId);
+
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('TrailersCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
+
+  $scope.settings = {
+    enableFriends: true
+  };
+})
+
+.controller('SearchCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
+  $scope.settings = {
+    enableFriends: true
+  };
+})
+
+.controller('ProfileCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
   $scope.settings = {
     enableFriends: true
   };

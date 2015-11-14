@@ -30,3 +30,25 @@ http://plnkr.co/edit/qYMCrt?p=preview
 
 ## Issues
 Issues have been disabled on this repo, if you do find an issue or have a question consider posting it on the [Ionic Forum](http://forum.ionicframework.com/).  Or else if there is truly an error, follow our guidelines for [submitting an issue](http://ionicframework.com/contribute/#issues) to the main Ionic repository. On the other hand, pull requests are welcome here!
+
+<ion-slide-box class="ion-slide-box" on-slide-change="slideChanged(index)" active-slide="slideIndex">
+  <ion-slide>
+    <ion-nav-view name="tab-home"></ion-nav-view>
+  </ion-slide>
+
+  <ion-slide>
+    <ion-nav-view name="tab-trending"></ion-nav-view>
+  </ion-slide>
+
+  <ion-slide>
+    <ion-nav-view name="tab-trailers"></ion-nav-view>
+  </ion-slide>
+
+  <ion-slide>
+    <ion-nav-view name="tab-search"></ion-nav-view>
+  </ion-slide>
+
+  <ion-slide>
+    <ion-nav-view name="tab-profile"></ion-nav-view>
+  </ion-slide>
+</ion-slide-box>

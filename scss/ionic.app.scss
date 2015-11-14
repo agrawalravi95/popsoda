@@ -13,7 +13,15 @@ $energized:                       #ffc900 !default;
 $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
+$home:                            #ff0000 !default;
 */
+
+$home:                            #ff0000 !default;
+$trending:                        #ff0000 !default;
+$trailers:                        #ff0000 !default;
+$search:                          #ff0000 !default;
+$profile:                         #ff0000 !default;
+
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
@@ -21,3 +29,150 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
+// Ionic Overrides
+.ion-tabs {
+	height: 50px !important;
+}
+
+.ion-slide-box {
+	top: 40px;
+	height: 100%;
+	width: 100%;
+}
+
+.tab-nav {
+	top: 0 !important;
+}
+
+.has-tabs-top {
+	top: 43px;
+}
+
+.scroll-bar-indicator {
+  display: none;
+}
+
+
+// Slide Tabs
+
+$slidingTabsHeight: 48px;
+
+ion-slide {
+  background-color: #f0f0f0;
+
+  &:nth-child(2n) {
+    background-color: #fff;
+  }
+}
+
+.slider {
+  height: 100%;
+}
+
+
+.slidingTabs {
+  height: $slidingTabsHeight;
+
+  .scroll {
+    height: auto;
+    min-width: 100%;
+  }
+
+  z-index: 10;
+
+  ul {
+    background-color: #fff;
+    height: $slidingTabsHeight;
+
+    li {
+      height: $slidingTabsHeight;
+      line-height: $slidingTabsHeight;
+      text-align: center;
+      float: left;
+      margin: 0;
+      padding: 0 12px 20px 12px;
+      font-size: 24px;
+      color: #888;
+      @include transition(color .25s ease-in-out);
+      position: relative;
+      overflow: hidden;
+
+      &.tab-active {
+
+        .home-icon {
+          color: $home;
+        }
+
+        .trending-icon {
+          color: $trending;
+        }
+
+        .trailers-icon {
+          color: $trailers;
+        }
+
+        .search-icon {
+          color: $search;
+        }
+
+        .profile-icon {
+          color: $profile;
+        }
+      }
+
+      .ink {
+        display: block; position: absolute;
+        background: rgba(0, 0, 0, .1);
+        border-radius: 100%;
+        transform: scale(0);
+      }
+
+      .ink.animate {
+        @include animation(ripple 0.65s linear);
+      }
+
+    }
+  }
+
+  .tab-indicator-wrapper {
+    width: 100%;
+    height: 2px;
+    background-color: rgba(255,255,255,.2);
+    -webkit-transform: translateY(-2px);
+    position: absolute;
+
+    .tab-indicator {
+      height: 100%;
+      width: 20% !important;
+      position: relative;
+
+      &.home-indicator {
+        background-color: $home;
+      }
+
+      &.trending-indicator {
+        background-color: $trending; 
+      }
+
+      &.trailers-indicator {
+        background-color: $trailers;
+      }
+
+      &.search-indicator {
+        background-color: $search;
+      }
+
+      &.profile-indicator {
+        background-color: $profile;
+      }
+    }
+  }
+
+}
+
+@-webkit-keyframes ripple {
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
