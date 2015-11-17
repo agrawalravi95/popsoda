@@ -16,11 +16,11 @@ $dark:                            #444 !default;
 $home:                            #ff0000 !default;
 */
 
-$home:                            #ff0000 !default;
-$trending:                        #ff0000 !default;
-$trailers:                        #ff0000 !default;
-$search:                          #ff0000 !default;
-$profile:                         #ff0000 !default;
+$home:                            #F46664 !default;
+$trending:                        #F7B955 !default;
+$trailers:                        #48C5BD !default;
+$search:                          #F46664 !default;
+$profile:                         #F7B955 !default;
 
 
 // The path for our ionicons font files, relative to the built CSS in www/css
@@ -28,6 +28,11 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
+@import "mixins";
+
+html, body {
+  height: 100%;
+}
 
 // Ionic Overrides
 .ion-tabs {
@@ -50,6 +55,11 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 .scroll-bar-indicator {
   display: none;
+}
+
+.slider-slide {
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
 }
 
 
@@ -136,9 +146,9 @@ ion-slide {
 
   .tab-indicator-wrapper {
     width: 100%;
-    height: 2px;
+    height: 4px;
     background-color: rgba(255,255,255,.2);
-    -webkit-transform: translateY(-2px);
+    -webkit-transform: translateY(-4px);
     position: absolute;
 
     .tab-indicator {
@@ -174,5 +184,111 @@ ion-slide {
   100% {
     opacity: 0;
     transform: scale(2.5);
+  }
+}
+
+
+
+// Movie Posts
+
+.movie-recommended {
+  width: 50%;
+  height: 180px;
+  float: left;
+  z-index: 0;
+
+  .item-content {
+    padding: 0;
+  }
+
+  .overlay {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+
+    width: 100%;
+    height: 100%;
+    @include linearGradient(transparent, rgba(0,0,0,0.6));
+  }
+
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: fill;
+    z-index: 1;
+  }
+
+  h2 {
+    position: absolute;
+    color: white;
+    bottom: 60px;
+    z-index: 3;
+    padding: 0 10px;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+    text-overflow: clip;
+    white-space: initial;
+  }
+
+  a.followBtn,
+  a.following {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 25px;
+    color: #FFFFFF;
+    padding: 3px 7px;
+    transition: all 150ms ease-out;
+
+
+    display: block;
+    margin: 0 auto;
+
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 3;
+
+  }
+
+  a.followBtn {
+    background: #F7C069;
+    max-width: 100px;
+
+    &:before {
+      content: '+  ';
+      font-size: 14px;
+      top: -2px;
+    }
+  }
+
+  a.following {
+    max-width: 130px;
+    background: #81B45D;
+
+    &:before {
+      content: '\2713  ';
+      font-size: 12px;
+    }
+  }
+}
+
+.popup--follow {
+  .popup {
+    border-radius: 50px;
+    padding: 15px;
+  }
+
+  .popup-head {
+    display: none;
+  }
+
+  .popup-body {
+    padding: 0;
+    text-align: center;
   }
 }

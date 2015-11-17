@@ -4,31 +4,31 @@ Each tab's child <ion-nav-view> directive will have its own
 navigation history that also transitions its views in and out.
 -->
 <ion-content scroll="false">
-  <ion-slide-box show-pager="false" ion-slide-tabs on-slide-change="slideHasChanged()">
+  <ion-slide-box show-pager="false" ion-slide-tabs on-slide-change="slideHasChanged()" does-continue="false">
     
     <ion-slide
       ion-slide-tab-label="<i class='ion-android-home home-icon'></i>">
-      <ion-nav-view name="tab-home"></ion-nav-view>
+      <ion-view ng-include="'templates/home.html'" ng-controller="HomeCtrl"></ion-view>
     </ion-slide>
 
     <ion-slide
       ion-slide-tab-label="<i class='ion-arrow-graph-up-right trending-icon'></i>">
-      <ion-nav-view name="tab-trending"></ion-nav-view>
+      <ion-view ng-include="'templates/trending.html'" ng-controller='TrendingCtrl'></ion-view>
     </ion-slide>
 
     <ion-slide
       ion-slide-tab-label="<i class='ion-film-marker trailers-icon'></i>">
-      <ion-nav-view name="tab-trailers"></ion-nav-view>
+      <ion-view ng-include="'templates/trailers.html'"></ion-view>
     </ion-slide>
 
     <ion-slide
       ion-slide-tab-label="<i class='ion-search search-icon'></i>">
-      <h1>Tab 4</h1>
+      <ion-view ng-include="'templates/search.html'"></ion-view>
     </ion-slide>
 
     <ion-slide
       ion-slide-tab-label="<i class='ion-person profile-icon'></i>">
-      <h1>Tab 5</h1>
+      <ion-view ng-include="'templates/profile.html'"></ion-view>
     </ion-slide>
   
   </ion-slide-box>

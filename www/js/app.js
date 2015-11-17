@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('popsoda', ['ionic', 'popsoda.controllers', 'popsoda.services'])
+angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'popsoda.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -13,17 +13,28 @@ angular.module('popsoda', ['ionic', 'popsoda.controllers', 'popsoda.services'])
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
       screen.lockOrientation('portrait');
-
     }
+
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    if(window.Connection) {
+      if(navigator.connection.type == Connection.NONE) {
+          alert('There is no internet connection available');
+      }else{
+          alert(navigator.connection.type);
+      }
+    }else{
+          alert('Cannot find Window.Connection');
+    }
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
+  $ionicConfigProvider.views.maxCache(0);
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
@@ -31,7 +42,7 @@ angular.module('popsoda', ['ionic', 'popsoda.controllers', 'popsoda.services'])
   $stateProvider
 
   // setup an abstract state for the tabs directive
-    .state('tab', {
+  .state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html',
@@ -43,14 +54,23 @@ angular.module('popsoda', ['ionic', 'popsoda.controllers', 'popsoda.services'])
   .state('tab.home', {
     url: '/home',
     views: {
-      'tab-home': {
-        templateUrl: 'templates/tab-home.html',
+      'home': {
+        templateUrl: 'templates/home.html',
         controller: 'HomeCtrl'
       }
     }
   })
+  .state('article-detail', {
+    url: '/article/:articleId',
+    views: {
+      'article': {
+        templateUrl: 'templates/article-detail.html',
+        controller: 'ArticleDetailCtrl'
+      }
+    }
+  })
 
-  .state('tab.trending', {
+  /*.state('tab.trending', {
       url: '/trending',
       views: {
         'tab-trending': {
@@ -97,7 +117,7 @@ angular.module('popsoda', ['ionic', 'popsoda.controllers', 'popsoda.services'])
         controller: 'ProfileCtrl'
       }
     }
-  });
+  })*/;
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/home');
