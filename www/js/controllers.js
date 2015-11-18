@@ -9,41 +9,35 @@ angular.module('popsoda.controllers', [])
 
 // Home Page Controller
 
-.controller('HomeCtrl', function($scope, Movies, $ionicSlideBoxDelegate, $http) {
+.controller('HomeCtrl', function($scope, Movies, $ionicSlideBoxDelegate) {
 
   $scope.movies = Movies.all();
 
   console.log("Called normally");
 
+  var lastMovie;
+
   Movies.getFeed().then(function(movies){
     $scope.movies = movies;
+    lastMovie = movies[movies.length - 1].movie_id;
+    console.log(lastMovie);
   });
 
   $scope.loadMore = function() {
 
-    console.log("Called by loadMore");
+    console.log("Called");
+    
+    if(isNaN(lastMovie)==false) {
 
-    Movies.getFeed().then(function(movies){
-      $scope.movies = $scope.movies.concat(movies);
-    });
+      console.log(lastMovie);
+      console.log("Called by loadMore");
+
+      Movies.getMore(lastMovie).then(function(movies){
+        $scope.movies = $scope.movies.concat(movies);
+      }); 
+    }
 
     $scope.$broadcast('scroll.infiniteScrollComplete');
-    
-    /* $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3").success(function(movies) {
-        Movies.set(movies.movie);
-        window.localStorage.removeItem('localMovies');
-        window.localStorage.setItem('localMovies', JSON.stringify(movies.movie));
-        console.log("Fetched new movies from the API");
-      })
-      .error(function() {
-        if(window.localStorage.getItem('localMovies') !== undefined) {
-          Movies.set(JSON.parse(window.localStorage.getItem('localMovies')));
-          console.error("Failed to fetch new movies from the API");
-        }
-      })
-      .finally(function() {
-        // console.log(window.localStorage.getItem('localMovies'));
-      }); */
   };
 })
 
@@ -52,8 +46,10 @@ angular.module('popsoda.controllers', [])
 .controller('FollowCtrl',function($scope, $element, $ionicPopup, $timeout, Movies) {
     
     $scope.toggleFollow = function(movie) {
+      console.log(movie);
       if(movie.follow == 0) {
         movie.follow = 1;
+        console.log(movie.follow);
 
         // Pop Up for Following
         var followPopup = $ionicPopup.show({
@@ -71,21 +67,15 @@ angular.module('popsoda.controllers', [])
       else {
         movie.follow = 0;
       }
+
+      console.log(Movies.all());
       Movies.toggleFollow(movie.movie_id);
-      
     };
 })
 
 // Trending Pages Controller
 
 .controller('TrendingCtrl', function($scope, Chats, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
 
   $scope.chats = Chats.all();
   $scope.remove = function(chat) {
@@ -93,11 +83,7 @@ angular.module('popsoda.controllers', [])
   };
 })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
-  
-  $scope.chat = Chats.get($stateParams.chatId);
-
-})
+// Trailer Controller
 
 .controller('TrailersCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
 
@@ -106,14 +92,22 @@ angular.module('popsoda.controllers', [])
   };
 })
 
+//Search Controller
+
 .controller('SearchCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
-  $scope.settings = {
-    enableFriends: true
-  };
+
 })
 
+//Profile Controller
+
 .controller('ProfileCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
+
+})
+
+//Article Detail Controller
+
+.controller('ArticleCtrl', function($scope, $stateParams, Movies) {
+  $scope.movie = Movies.get($stateParams.articleId);
+  console.log($scope.movie);
+})
+

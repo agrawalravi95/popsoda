@@ -20,7 +20,7 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'pop
       StatusBar.styleDefault();
     }
 
-    if(window.Connection) {
+    /* if(window.Connection) {
       if(navigator.connection.type == Connection.NONE) {
           alert('There is no internet connection available');
       }else{
@@ -28,7 +28,7 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'pop
       }
     }else{
           alert('Cannot find Window.Connection');
-    }
+    } */
   });
 })
 
@@ -60,64 +60,20 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'pop
       }
     }
   })
-  .state('article-detail', {
+  .state('article', {
     url: '/article/:articleId',
+    templateUrl: 'templates/article.html',
+    controller: 'ArticleCtrl'
+  })
+  .state('article.article-detail', {
+    url: '/:articleId',
     views: {
-      'article': {
+      'article-detail': {
         templateUrl: 'templates/article-detail.html',
         controller: 'ArticleDetailCtrl'
       }
     }
-  })
-
-  /*.state('tab.trending', {
-      url: '/trending',
-      views: {
-        'tab-trending': {
-          templateUrl: 'templates/tab-trending.html',
-          controller: 'TrendingCtrl'
-        }
-      }
-    })
-    .state('tab.chat-detail', {
-      url: '/trending/:chatId',
-      views: {
-        'tab-trending': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
-    })
-
-  .state('tab.trailers', {
-    url: '/trailers',
-    views: {
-      'tab-trailers': {
-        templateUrl: 'templates/tab-trailers.html',
-        controller: 'TrailersCtrl'
-      }
-    }
-  })
-
-  .state('tab.search', {
-    url: '/search',
-    views: {
-      'tab-search': {
-        templateUrl: 'templates/tab-search.html',
-        controller: 'SearchCtrl'
-      }
-    }
-  })
-
-  .state('tab.profile', {
-    url: '/profile',
-    views: {
-      'tab-profile': {
-        templateUrl: 'templates/tab-profile.html',
-        controller: 'ProfileCtrl'
-      }
-    }
-  })*/;
+  });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/home');

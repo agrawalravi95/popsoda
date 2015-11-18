@@ -192,7 +192,7 @@ ion-slide {
 // Movie Posts
 
 .movie-recommended {
-  width: 50%;
+  width: calc(50%+2px);
   height: 180px;
   float: left;
   z-index: 0;

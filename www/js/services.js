@@ -61,30 +61,60 @@ angular.module('popsoda.services', [])
 
   return {
     all: function() {
-      return movies;
+      if(movies.length > 0) {
+        return movies;
+      }
+      else {
+        movies = JSON.parse(window.localStorage.getItem('localMovies'));
+        console.log("Fetched from local");
+        return movies;
+      }
     },
+
+    get: function(movieId) {
+      console.log(movieId);
+      for(var i=0; i<movies.length; i++) {
+        if(movies[i].movie_id == parseInt(movieId)) {
+          return movies[i];
+        }
+      }
+    },
+
     set: function(moviesFromAPI) {
       for (var i = 0; i <= moviesFromAPI.length - 1; i++) {
         movies.push(moviesFromAPI[i]);
       };
       return movies;
     },
+
     toggleFollow: function(movieId) {
       for(var i=0; i<movies.length; i++) {
-        if(movies[i].movie_id === parseInt(movieId)) {
-          movies[i].follow = !movies[i].follow;
+        if(movies[i].movie_id == parseInt(movieId)) {
+          console.log(movies[i].follow);
+          movies[i].follow == 0 ? movies[i].follow = 1 : movies[i].follow = 0;
+          console.log(movies[i].follow);
           break;
         }
       }
     },
+
     getFeed: function(){
-      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3").then(function(response){
+      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/0/6")
+      .then(function successCallback(response){
         movies = response.data.movie;
+        window.localStorage.removeItem('localMovies');
+        window.localStorage.setItem('localMovies', JSON.stringify(movies));
+        return movies;
+      }, 
+      function errorCallback() {
+        movies = JSON.parse(window.localStorage.getItem('localMovies'));
+        console.log("Fetched from local");
         return movies;
       });
     },
-    getMore: function() {
-      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3").then(function(response){
+
+    getMore: function(lastMovie) {
+      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/" + lastMovie + "/6").then(function(response){
         movies = response.data.movie;
         return movies;
       });
