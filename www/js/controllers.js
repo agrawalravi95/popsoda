@@ -4,17 +4,33 @@ angular.module('popsoda.controllers', [])
 // Tabs and Slide Controller
 
 .controller('TabSlideCtrl', function($scope, $ionicSlideBoxDelegate, $state) {
-    
 })
 
 // Home Page Controller
 
-.controller('HomeCtrl', function($scope, Movies, $ionicPopup, $timeout, $ionicGesture, $ionicSlideBoxDelegate) {
+.controller('HomeCtrl', function($scope, Movies, $ionicPopup, $timeout, $ionicSlideBoxDelegate) {
 
-  if($ionicSlideBoxDelegate.currentIndex() == 0) {
-    var slider = angular.element(document.querySelector('.slider'));
-    slider.dragleft = event.preventDefault();
+  $scope.activeSlide = 0;
+
+  $ionicSlideBoxDelegate.enableSlide(true);
+
+  var slider = angular.element(document.querySelector('.slider'));
+  console.log(slider.inheritedData('$uiView').state);
+
+  /* $scope.$watch(function (scope) {
+    return scope.activeSlide;
+  }, function(newValue, oldValue) {
+    switch(newValue) {
+      case 0:
+      case 4: $ionicSlideBoxDelegate.enableSlide(false);
+              break;
+    }
+  }); */
+
+  $scope.enableSlide = function () {
+    $ionicSlideBoxDelegate.enableSlide(true);
   }
+
   /* $ionicLoading.show({
     content: 'Loading',
     animation: 'fade-in',
@@ -123,6 +139,10 @@ angular.module('popsoda.controllers', [])
   $scope.remove = function(chat) {
     Chats.remove(chat);
   };
+
+  $scope.$on('$ionicView.loaded', function() {
+      console.log("Here");
+  });
 })
 
 // Trailer Controller

@@ -5,7 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'popsoda.services'])
+
+
+angular.module('popsoda', ['ionic', 'ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
 
 .run(function($ionicPlatform, $ionicPopup) {
   $ionicPlatform.ready(function() {
@@ -20,8 +22,9 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'pop
       StatusBar.styleDefault();
     }
 
-    $ionicPlatform.registerBackButtonAction(function(event) {
+    /* $ionicPlatform.registerBackButtonAction(function(event) {
       if (true) { // your check here
+        console.log($state.current.name);
         $ionicPopup.confirm({
           template: 'Are you sure you want to exit?',
           cssClass: 'popup--exit'
@@ -32,8 +35,8 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'pop
         })
       }
     }, 100);
-
-    /* if(window.Connection) {
+    
+    if(window.Connection) {
       if(navigator.connection.type == Connection.NONE) {
           alert('There is no internet connection available');
       }else{
@@ -47,7 +50,8 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'pop
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
-  $ionicConfigProvider.views.maxCache(0);
+  $ionicConfigProvider.views.maxCache(5);
+  $ionicConfigProvider.scrolling.jsScrolling(false);
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.

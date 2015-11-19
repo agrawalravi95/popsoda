@@ -73,7 +73,8 @@ angular.module('popsoda.services', [])
 
     get: function(movieId) {
       console.log(movieId);
-      for(var i=0; i<movies.length; i++) {
+      var i = 0, len = movies.length;
+      for(; i<len; i++) {
         if(movies[i].movie_id == parseInt(movieId)) {
           return movies[i];
         }
@@ -81,14 +82,16 @@ angular.module('popsoda.services', [])
     },
 
     set: function(moviesFromAPI) {
-      for (var i = 0; i <= moviesFromAPI.length - 1; i++) {
+      var i = 0, len = moviesFromAPI.length;
+      for(; i<len; i++) {
         movies.push(moviesFromAPI[i]);
       };
       return movies;
     },
 
     toggleFollow: function(movieId) {
-      for(var i=0; i<movies.length; i++) {
+      var i = 0, len = movies.length;
+      for(; i<len; i++) {
         if(movies[i].movie_id == parseInt(movieId)) {
           console.log(movies[i].follow);
           movies[i].follow == 0 ? movies[i].follow = 1 : movies[i].follow = 0;
