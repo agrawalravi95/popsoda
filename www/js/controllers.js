@@ -3,19 +3,18 @@ angular.module('popsoda.controllers', [])
 
 // Tabs and Slide Controller
 
-.controller('TabSlideCtrl', function($scope, $ionicSlideBoxDelegate, $state) {
+.controller('TabSlideCtrl', function($scope, $ionicSlideBoxDelegate, $state, $ionicHistory) {
+    console.log($ionicHistory.viewHistory());
+
 })
 
 // Home Page Controller
 
-.controller('HomeCtrl', function($scope, Movies, $ionicPopup, $timeout, $ionicSlideBoxDelegate) {
+.controller('HomeCtrl', function($scope, Movies, $ionicPopup, $timeout, $ionicSlideBoxDelegate, $ionicHistory) {
 
-  $scope.activeSlide = 0;
+  console.log($ionicHistory.viewHistory());
 
-  $ionicSlideBoxDelegate.enableSlide(true);
-
-  var slider = angular.element(document.querySelector('.slider'));
-  console.log(slider.inheritedData('$uiView').state);
+  // console.log(slider.inheritedData('$uiView').state);
 
   /* $scope.$watch(function (scope) {
     return scope.activeSlide;
@@ -27,9 +26,9 @@ angular.module('popsoda.controllers', [])
     }
   }); */
 
-  $scope.enableSlide = function () {
-    $ionicSlideBoxDelegate.enableSlide(true);
-  }
+  // $scope.enableSlide = function () {
+  //   $ionicSlideBoxDelegate.enableSlide(true);
+  // }
 
   /* $ionicLoading.show({
     content: 'Loading',
@@ -168,7 +167,14 @@ angular.module('popsoda.controllers', [])
 
 //Article Detail Controller
 
-.controller('ArticleCtrl', function($scope, $stateParams, Movies) {
+.controller('ArticleCtrl', function($scope, $stateParams, $ionicHistory, Movies){
   $scope.movie = Movies.get($stateParams.articleId);
+  
+  $scope.goBackHandler = function()
+    {
+        // $ionicHistory.goBack();                      //This doesn't work
+        window.history.back();                          //This works
+        console.log($ionicHistory.viewHistory());
+    }
 })
 

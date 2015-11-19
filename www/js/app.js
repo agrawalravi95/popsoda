@@ -60,16 +60,15 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad','popsoda.controllers', 'pops
 
   // setup an abstract state for the tabs directive
   .state('tab', {
-    url: '/tab',
-    abstract: true,
+    url: '/',
     templateUrl: 'templates/tabs.html',
     controller: 'TabSlideCtrl'
   })
 
   // Each tab has its own nav history stack:
 
-  .state('tab.home', {
-    url: '/home',
+  .state('home', {
+    url: '/',
     views: {
       'home': {
         templateUrl: 'templates/home.html',
@@ -79,9 +78,17 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad','popsoda.controllers', 'pops
   })
   .state('article', {
     url: '/article/:articleId',
-    templateUrl: 'templates/article.html',
-    controller: 'ArticleCtrl'
-  })
+    views: {
+      '': {
+        templateUrl: 'templates/article.html',
+        controller: 'ArticleCtrl'
+      }
+    },
+    params: {
+      articleId: null
+    }
+  });
+  /*
   .state('article.article-detail', {
     url: '/:articleId',
     views: {
@@ -90,9 +97,9 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad','popsoda.controllers', 'pops
         controller: 'ArticleDetailCtrl'
       }
     }
-  });
+  }); */
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/home');
+  $urlRouterProvider.otherwise('/');
 
 });

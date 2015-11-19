@@ -1,8 +1,8 @@
 <ion-content scroll="false">
-  <ion-slide-box show-pager="false" ion-slide-tabs on-slide-change="slideHasChanged()" does-continue="false" active-slide="activeSlide" enable-slide=>
+  <ion-slide-box show-pager="false" ion-slide-tabs on-slide-change="slideHasChanged()" does-continue="false">
     
     <ion-slide
-      ion-slide-tab-label="<i class='ion-android-home home-icon'></i>" on-drag-left="console.log('Here');">
+      ion-slide-tab-label="<i class='ion-android-home home-icon'></i>">
       <ion-view ng-include="'templates/home.html'" ng-controller="HomeCtrl"></ion-view>
     </ion-slide>
 
