@@ -2,7 +2,7 @@
   <ion-slide-box show-pager="false" ion-slide-tabs on-slide-change="slideHasChanged()" does-continue="false">
     
     <ion-slide
-      ion-slide-tab-label="<i class='ion-android-home home-icon'></i>">
+      ion-slide-tab-label="<i class='ion-android-home home-icon'></i>" on-swipe-left="console.log('Swiping Left');">
       <ion-view ng-include="'templates/home.html'" ng-controller="HomeCtrl"></ion-view>
     </ion-slide>
 

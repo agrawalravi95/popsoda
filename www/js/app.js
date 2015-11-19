@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'popsoda.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $ionicPopup) {
   $ionicPlatform.ready(function() {
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -19,6 +19,19 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad', 'popsoda.controllers', 'pop
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    $ionicPlatform.registerBackButtonAction(function(event) {
+      if (true) { // your check here
+        $ionicPopup.confirm({
+          template: 'Are you sure you want to exit?',
+          cssClass: 'popup--exit'
+        }).then(function(res) {
+          if (res) {
+            ionic.Platform.exitApp();
+          }
+        })
+      }
+    }, 100);
 
     /* if(window.Connection) {
       if(navigator.connection.type == Connection.NONE) {

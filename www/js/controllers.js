@@ -9,32 +9,74 @@ angular.module('popsoda.controllers', [])
 
 // Home Page Controller
 
-.controller('HomeCtrl', function($scope, Movies, $ionicSlideBoxDelegate) {
+.controller('HomeCtrl', function($scope, Movies, $ionicPopup, $timeout, $ionicGesture, $ionicSlideBoxDelegate) {
+
+  if($ionicSlideBoxDelegate.currentIndex() == 0) {
+    var slider = angular.element(document.querySelector('.slider'));
+    slider.dragleft = event.preventDefault();
+  }
+  /* $ionicLoading.show({
+    content: 'Loading',
+    animation: 'fade-in',
+    showBackdrop: true,
+    maxWidth: 200,
+    showDelay: 0
+  });
+
+  $timeout(function () {
+    $ionicLoading.hide();
+  }, 2000);*/
 
   $scope.movies = Movies.all();
-
-  console.log("Called normally");
-
-  var lastMovie;
+  
+  var lastMovie, loadAble = false;
 
   Movies.getFeed().then(function(movies){
     $scope.movies = movies;
     lastMovie = movies[movies.length - 1].movie_id;
-    console.log(lastMovie);
+    loadAble = true;
   });
+
+  $scope.moreDataAvailable = function() {
+    return true;
+  }
 
   $scope.loadMore = function() {
 
     console.log("Called");
     
-    if(isNaN(lastMovie)==false) {
+    if(isNaN(lastMovie)==false && loadAble == true) {
+
+      loadAble = false;
 
       console.log(lastMovie);
       console.log("Called by loadMore");
 
       Movies.getMore(lastMovie).then(function(movies){
         $scope.movies = $scope.movies.concat(movies);
-      }); 
+        try {
+          lastMovie = movies[movies.length - 1].movie_id;  
+        }
+        catch (err) {
+
+          /* 
+          // Error Pop Up
+          var errorPopup = $ionicPopup.show({
+            template: " <strong> You have reached the end of the list! </strong>",
+            scope: $scope,
+            cssClass: 'popup--error'
+          });
+
+          //Timeout for popup
+          $timeout(function() {
+             errorPopup.close();
+          }, 1000);
+
+          */
+
+        }
+        loadAble = true;
+      });
     }
 
     $scope.$broadcast('scroll.infiniteScrollComplete');
@@ -53,7 +95,7 @@ angular.module('popsoda.controllers', [])
 
         // Pop Up for Following
         var followPopup = $ionicPopup.show({
-          template: "<style> .popup { padding: 25px; border-radius: 50px;} </style> <strong> Following " + movie.name + "</strong>",
+          template: "<strong> Following " + movie.name + "</strong>",
           scope: $scope,
           cssClass: 'popup--follow'
         });
@@ -69,7 +111,7 @@ angular.module('popsoda.controllers', [])
       }
 
       console.log(Movies.all());
-      Movies.toggleFollow(movie.movie_id);
+      // Movies.toggleFollow(movie.movie_id);
     };
 })
 
@@ -108,6 +150,5 @@ angular.module('popsoda.controllers', [])
 
 .controller('ArticleCtrl', function($scope, $stateParams, Movies) {
   $scope.movie = Movies.get($stateParams.articleId);
-  console.log($scope.movie);
 })
 

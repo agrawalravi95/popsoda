@@ -114,9 +114,10 @@ angular.module('popsoda.services', [])
     },
 
     getMore: function(lastMovie) {
-      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/" + lastMovie + "/6").then(function(response){
-        movies = response.data.movie;
-        return movies;
+      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/" + lastMovie + "/4").then(function(response){
+        var newMovies = response.data.movie;
+        movies = movies.concat(newMovies);
+        return newMovies;
       });
     },
     setFeed: function() {
