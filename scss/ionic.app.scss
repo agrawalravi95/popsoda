@@ -198,10 +198,11 @@ ion-slide {
 // Movie Posts
 
 .movie-recommended {
-  width: calc(50%+2px);
+  width: calc(50% + 2px);
   height: 180px;
   float: left;
   z-index: 0;
+  padding: 0;
 
   &.ng-enter {
       -webkit-animation: fadeInLeft 1s;
