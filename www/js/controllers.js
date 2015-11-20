@@ -14,37 +14,12 @@ angular.module('popsoda.controllers', [])
 
   console.log($ionicHistory.viewHistory());
 
-  // console.log(slider.inheritedData('$uiView').state);
-
-  /* $scope.$watch(function (scope) {
-    return scope.activeSlide;
-  }, function(newValue, oldValue) {
-    switch(newValue) {
-      case 0:
-      case 4: $ionicSlideBoxDelegate.enableSlide(false);
-              break;
-    }
-  }); */
-
-  // $scope.enableSlide = function () {
-  //   $ionicSlideBoxDelegate.enableSlide(true);
-  // }
-
-  /* $ionicLoading.show({
-    content: 'Loading',
-    animation: 'fade-in',
-    showBackdrop: true,
-    maxWidth: 200,
-    showDelay: 0
-  });
-
-  $timeout(function () {
-    $ionicLoading.hide();
-  }, 2000);*/
-
   $scope.movies = Movies.all();
   
-  var lastMovie, loadAble = false;
+  var lastMovie,
+      loadAble = false;
+
+  $scope.loadAble = loadAble;
 
   Movies.getFeed().then(function(movies){
     $scope.movies = movies;
@@ -58,15 +33,14 @@ angular.module('popsoda.controllers', [])
 
   $scope.loadMore = function() {
 
-    console.log("Called");
-    
     if(isNaN(lastMovie)==false && loadAble == true) {
-
+      
+      // Lock the function call and show loading div
       loadAble = false;
-
+      $scope.loadAble = true;
       console.log(lastMovie);
       console.log("Called by loadMore");
-
+      // Get More Movies Function Call
       Movies.getMore(lastMovie).then(function(movies){
         $scope.movies = $scope.movies.concat(movies);
         try {
@@ -90,10 +64,12 @@ angular.module('popsoda.controllers', [])
           */
 
         }
+        // Release Function Lock
         loadAble = true;
+        $scope.loadAble = false;
       });
     }
-
+    // Mark end of Infinite Scroll
     $scope.$broadcast('scroll.infiniteScrollComplete');
   };
 })

@@ -102,4 +102,29 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad','popsoda.controllers', 'pops
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
 
+})
+
+.config(function($httpProvider) {
+  $httpProvider.interceptors.push(function($rootScope) {
+    return {
+      request: function(config) {
+        $rootScope.$broadcast('loading:show')
+        return config
+      },
+      response: function(response) {
+        $rootScope.$broadcast('loading:hide')
+        return response
+      }
+    }
+  })
+})
+
+.run(function($rootScope, $ionicLoading) {
+  $rootScope.$on('loading:show', function() {
+    $ionicLoading.show({template: 'foo'})
+  })
+
+  $rootScope.$on('loading:hide', function() {
+    $ionicLoading.hide()
+  })
 });

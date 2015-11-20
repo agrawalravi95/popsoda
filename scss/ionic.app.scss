@@ -69,6 +69,23 @@ html, body {
 }
 
 
+
+// Animations
+
+@-webkit-keyframes ripple {
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
+
+
+@-webkit-keyframes loading {
+    0%{background-position:0% 92%}
+    50%{background-position:100% 9%}
+    100%{background-position:0% 92%}
+}
+
 // Slide Tabs
 
 $slidingTabsHeight: 48px;
@@ -186,12 +203,8 @@ ion-slide {
 
 }
 
-@-webkit-keyframes ripple {
-  100% {
-    opacity: 0;
-    transform: scale(2.5);
-  }
-}
+
+
 
 
 
@@ -204,9 +217,25 @@ ion-slide {
   z-index: 0;
   padding: 0;
 
+  &.movie--loading {
+    width: 180px;
+    position: relative;
+
+    .loading {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+
+      background: linear-gradient(49deg, #eee, #ccc);
+      background-size: 400% 400%;
+
+      @include animation(loading 0.65s ease infinite);
+    }
+  }
+
   &.ng-enter {
-      -webkit-animation: fadeInLeft 1s;
-      animation: fadeInLeft 1s;
+      -webkit-animation: fadeInUp 1s;
+      animation: fadeInUp 1s;
     }
 
     &.ng-enter-stagger {
@@ -237,6 +266,11 @@ ion-slide {
     height: 180px;
     object-fit: fill;
     z-index: 1;
+
+    &.ng-enter {
+      -webkit-animation: fadeIn 0.5s;
+      animation: fadeIn 0.5s;
+    }
   }
 
   h2 {
