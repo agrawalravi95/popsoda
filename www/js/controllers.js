@@ -5,22 +5,20 @@ angular.module('popsoda.controllers', [])
 
 .controller('TabSlideCtrl', function($scope, $ionicSlideBoxDelegate, $state, $ionicHistory) {
     console.log($ionicHistory.viewHistory());
-
 })
 
 // Home Page Controller
 
 .controller('HomeCtrl', function($scope, Movies, $ionicPopup, $timeout, $ionicSlideBoxDelegate, $ionicHistory) {
 
-  console.log($ionicHistory.viewHistory());
-
-  $scope.movies = Movies.all();
-  
   var lastMovie,
       loadAble = false;
 
+  // Initialize Movies
+  $scope.movies = Movies.all();
   $scope.loadAble = loadAble;
-
+  
+  // Get Initial Feed from API
   Movies.getFeed().then(function(movies){
     $scope.movies = movies;
     lastMovie = movies[movies.length - 1].movie_id;
@@ -38,8 +36,7 @@ angular.module('popsoda.controllers', [])
       // Lock the function call and show loading div
       loadAble = false;
       $scope.loadAble = true;
-      console.log(lastMovie);
-      console.log("Called by loadMore");
+
       // Get More Movies Function Call
       Movies.getMore(lastMovie).then(function(movies){
         $scope.movies = $scope.movies.concat(movies);
@@ -69,6 +66,7 @@ angular.module('popsoda.controllers', [])
         $scope.loadAble = false;
       });
     }
+
     // Mark end of Infinite Scroll
     $scope.$broadcast('scroll.infiniteScrollComplete');
   };
@@ -131,8 +129,21 @@ angular.module('popsoda.controllers', [])
 
 //Search Controller
 
-.controller('SearchCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
+.controller('SearchCtrl', function($scope, Searches) {
 
+  console.log("in search");
+  
+  $scope.data = { "tags" : [], "search" : '' };
+
+  $scope.search = function() {
+    console.log("Here");
+
+    Searches.searchTags($scope.data.search).then(
+      function(matches) {
+        $scope.data.tags = matches;
+      }
+    )
+  }
 })
 
 //Profile Controller

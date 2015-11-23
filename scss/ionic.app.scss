@@ -30,9 +30,13 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 @import "www/lib/ionic/scss/ionic";
 @import "mixins";
 
+
+// Overall Styles
+
 html, body {
   height: 100%;
 }
+
 
 // Ionic Overrides
 .ion-tabs {
@@ -85,6 +89,8 @@ html, body {
     50%{background-position:100% 9%}
     100%{background-position:0% 92%}
 }
+
+
 
 // Slide Tabs
 
@@ -200,11 +206,7 @@ ion-slide {
       }
     }
   }
-
 }
-
-
-
 
 
 
@@ -332,8 +334,7 @@ ion-slide {
 }
 
 .popup--follow,
-.popup--error,
-.popup--exit {
+.popup--error{
   .popup {
     border-radius: 50px;
     padding: 15px;
@@ -356,8 +357,34 @@ ion-slide {
   }
 }
 
-.popup--exit {
-  .popup {
-    border-radius: 20px;
+// Search Content
+
+.search-content {
+  background: #ddd;
+
+  .search-input {
+    margin-top: 1px;
+    position: relative;
+
+    i {
+      position: absolute;
+      margin-right: 10px;
+      font-size: 20px;
+      left: 20px;
+      top: 10px;
+    }
+
+    input {
+      padding: 20px 10px 20px 50px;
+      font-size: 14px;
+      display: block;
+      width: 100%;
+      background: #f7f7f7;
+
+      &:focus {
+        background: #ffffff;
+        outline: 1px solid rgba($search, 0.2);
+      }
+    }
   }
 }

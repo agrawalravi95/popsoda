@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 
 
-angular.module('popsoda', ['ionic', 'ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
+angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
 
 .run(function($ionicPlatform, $ionicPopup) {
   $ionicPlatform.ready(function() {
@@ -104,27 +104,27 @@ angular.module('popsoda', ['ionic', 'ionicLazyLoad','popsoda.controllers', 'pops
 
 })
 
-.config(function($httpProvider) {
-  $httpProvider.interceptors.push(function($rootScope) {
-    return {
-      request: function(config) {
-        $rootScope.$broadcast('loading:show')
-        return config
-      },
-      response: function(response) {
-        $rootScope.$broadcast('loading:hide')
-        return response
-      }
-    }
-  })
-})
+// .config(function($httpProvider) {
+//   $httpProvider.interceptors.push(function($rootScope) {
+//     return {
+//       request: function(config) {
+//         $rootScope.$broadcast('loading:show')
+//         return config
+//       },
+//       response: function(response) {
+//         $rootScope.$broadcast('loading:hide')
+//         return response
+//       }
+//     }
+//   })
+// })
 
-.run(function($rootScope, $ionicLoading) {
-  $rootScope.$on('loading:show', function() {
-    $ionicLoading.show({template: 'foo'})
-  })
+// .run(function($rootScope, $ionicLoading) {
+//   $rootScope.$on('loading:show', function() {
+//     $ionicLoading.show({template: 'foo'})
+//   })
 
-  $rootScope.$on('loading:hide', function() {
-    $ionicLoading.hide()
-  })
-});
+//   $rootScope.$on('loading:hide', function() {
+//     $ionicLoading.hide()
+//   })
+// });
