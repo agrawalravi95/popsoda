@@ -55,9 +55,27 @@ angular.module('popsoda.services', [])
   };
 })
 
+.service('User', function() {
+  // For the purpose of this example I will store user data on ionic local storage but you should save it on a database
+  var setUser = function(user_data) {
+    window.localStorage.starter_facebook_user = JSON.stringify(user_data);
+  };
+
+  var getUser = function(){
+    return JSON.parse(window.localStorage.starter_facebook_user || '{}');
+  };
+
+  return {
+    getUser: getUser,
+    setUser: setUser
+  };
+})
+
 .factory('Movies', function($http) {
 
-  var movies = [];
+  var movies = [],
+      movieDetail;
+
 
   return {
     all: function() {
@@ -72,7 +90,6 @@ angular.module('popsoda.services', [])
     },
 
     get: function(movieId) {
-      console.log(movieId);
       var i = 0, len = movies.length;
       for(; i<len; i++) {
         if(movies[i].movie_id == parseInt(movieId)) {
@@ -89,22 +106,25 @@ angular.module('popsoda.services', [])
       return movies;
     },
 
+    getDetails: function (movieId) {
+      return $http.get("https://popsoda.mobi/api/index.php/getmovie/" + movieId + "/3")
+      .then(function successCallback (response) {
+        movieDetail = response.data;
+        return movieDetail;
+      },
+      function errorCallback () {
+        console.error("Cannot fetch movie detail at the moment");
+      })
+    },
+
     toggleFollow: function(movieId) {
-      var i = 0, len = movies.length;
-      for(; i<len; i++) {
-        if(movies[i].movie_id == parseInt(movieId)) {
-          console.log(movies[i].follow);
-          movies[i].follow == 0 ? movies[i].follow = 1 : movies[i].follow = 0;
-          console.log(movies[i].follow);
-          break;
-        }
-      }
+      return false;
     },
 
     getFeed: function(){
-      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/0/6")
+      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/0/4")
       .then(function successCallback(response){
-        movies = response.data.movie;
+        movies = response.data;
         window.localStorage.removeItem('localMovies');
         window.localStorage.setItem('localMovies', JSON.stringify(movies));
         return movies;
@@ -117,8 +137,8 @@ angular.module('popsoda.services', [])
     },
 
     getMore: function(lastMovie) {
-      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/" + lastMovie + "/4").then(function(response){
-        var newMovies = response.data.movie;
+      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/" + lastMovie + "/10").then(function(response){
+        var newMovies = response.data;
         movies = movies.concat(newMovies);
         return newMovies;
       });
@@ -128,6 +148,75 @@ angular.module('popsoda.services', [])
     }
   }
 
+})
+
+.factory('Articles', function($http) {
+  var articles = [];
+
+  var imageForVideo = function (articles) {
+    var BASE_YOUTUBE_IMAGE_URL = "https://img.youtube.com/vi/";
+    var i = articles.length - 1;
+
+    for (; i >= 0; i--) {
+      if(articles[i].hero_img) {
+        hero_img = BASE_YOUTUBE_IMAGE_URL + hero_video_url.substr(hero_video_url.length - 11) + "/0.jpg";
+      }
+    };
+  }
+
+  return{
+    all: function () {
+      if(articles.length > 0) {
+        return articles;
+      }
+      else {
+        articles = JSON.parse(window.localStorage.getItem('localArticles'));
+        console.log("Fetched from local");
+        return articles;
+      }
+    },
+
+    get: function(articleId) {
+      var i = 0, len = articles.length;
+      for(; i<len; i++) {
+        if(articles[i].article_id == parseInt(articleId)) {
+          return articles[i];
+        }
+      }
+    },
+
+    set: function(articlesFromAPI) {
+      var i = 0, len = articlesFromAPI.length;
+      for(; i<len; i++) {
+        articles.push(articlesFromAPI[i]);
+      };
+      return articles;
+    },
+
+    getFeed: function(){
+      return $http.get("https://popsoda.mobi/api/index.php/home/toparticle/0/10")
+      .then(function successCallback(response){
+        articles = response.data;
+        window.localStorage.removeItem('localArticles');
+        window.localStorage.setItem('localArticles', JSON.stringify(articles));
+        imageForVideo(articles);
+        return articles;
+      }, 
+      function errorCallback() {
+        articles = JSON.parse(window.localStorage.getItem('localArticles'));
+        console.log("Fetched from local");
+        return articles;
+      });
+    },
+
+    getMore: function(lastArticle) {
+      return $http.get("https://popsoda.mobi/api/index.php/home/toparticle/" + lastArticle + "/10").then(function(response){
+        var newArticles = response.data;
+        articles = articles.concat(newArticles);
+        return newArticles;
+      });
+    }
+  }
 })
 
 .factory('Searches', function($q, $timeout, $http) {

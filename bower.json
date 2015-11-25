@@ -6,7 +6,6 @@
   },
   "dependencies": {
     "ionic-image-lazy-load": "ion-image-lazy-load#*",
-    "ion-autocomplete": "~0.3.1",
     "angucomplete-alt": "~2.1.0"
   }
 }

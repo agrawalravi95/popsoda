@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 
 
-angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
+angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ngCordova', 'ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
 
 .run(function($ionicPlatform, $ionicPopup) {
   $ionicPlatform.ready(function() {
@@ -64,16 +64,16 @@ angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ionicLazyLoad','popsoda
     templateUrl: 'templates/tabs.html',
     controller: 'TabSlideCtrl'
   })
-
-  // Each tab has its own nav history stack:
-
-  .state('home', {
-    url: '/',
+  .state('movie', {
+    url: '/movie/:movieId',
     views: {
-      'home': {
-        templateUrl: 'templates/home.html',
-        controller: 'HomeCtrl'
+      '': {
+        templateUrl: 'templates/movie.html',
+        controller: 'MovieCtrl'
       }
+    },
+    params: {
+      movieId: null
     }
   })
   .state('article', {
@@ -85,19 +85,9 @@ angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ionicLazyLoad','popsoda
       }
     },
     params: {
-      articleId: null
+      movieId: null
     }
   });
-  /*
-  .state('article.article-detail', {
-    url: '/:articleId',
-    views: {
-      'article-detail': {
-        templateUrl: 'templates/article-detail.html',
-        controller: 'ArticleDetailCtrl'
-      }
-    }
-  }); */
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
