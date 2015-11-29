@@ -1,13 +1,5 @@
-// Ionic Starter App
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
-
-
-angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ngCordova', 'ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
+angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-alt', 'ngCordova', 'ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
 
 .run(function($ionicPlatform, $ionicPopup) {
   $ionicPlatform.ready(function() {
@@ -22,6 +14,8 @@ angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ngCordova', 'ionicLazyL
       StatusBar.styleDefault();
     }
 
+    // Back button handler
+
     /* $ionicPlatform.registerBackButtonAction(function(event) {
       if (true) { // your check here
         console.log($state.current.name);
@@ -35,6 +29,8 @@ angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ngCordova', 'ionicLazyL
         })
       }
     }, 100);
+
+    // Connection Test
     
     if(window.Connection) {
       if(navigator.connection.type == Connection.NONE) {
@@ -45,17 +41,38 @@ angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ngCordova', 'ionicLazyL
     }else{
           alert('Cannot find Window.Connection');
     } */
+
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $ionicNativeTransitionsProvider) {
 
   $ionicConfigProvider.views.maxCache(5);
   $ionicConfigProvider.scrolling.jsScrolling(false);
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
+
+  $ionicNativeTransitionsProvider.setDefaultOptions({
+        duration: 400, // in milliseconds (ms), default 400,
+        slowdownfactor: 4, // overlap views (higher number is more) or no overlap (1), default 4
+        iosdelay: -1, // ms to wait for the iOS webview to update before animation kicks in, default -1
+        androiddelay: -1, // same as above but for Android, default -1
+        winphonedelay: -1, // same as above but for Windows Phone, default -1,
+        fixedPixelsTop: 0, // the number of pixels of your fixed header, default 0 (iOS and Android)
+        fixedPixelsBottom: 0, // the number of pixels of your fixed footer (f.i. a tab bar), default 0 (iOS and Android)
+        triggerTransitionEvent: '$ionicView.afterEnter', // internal ionic-native-transitions option
+        backInOppositeDirection: false // Takes over default back transition and state back transition to use the opposite direction transition to go back
+    });
+
+    $ionicNativeTransitionsProvider.setDefaultTransition({
+        type: 'slide',
+        direction: 'left'
+    });
+
+    $ionicNativeTransitionsProvider.setDefaultBackTransition({
+        type: 'slide',
+        direction: 'right'
+    });
+
+
   $stateProvider
 
   // setup an abstract state for the tabs directive
@@ -66,6 +83,10 @@ angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ngCordova', 'ionicLazyL
   })
   .state('movie', {
     url: '/movie/:movieId',
+    nativeTransitions: {
+      'type' : 'slide',
+      'direction': 'left'
+    },
     views: {
       '': {
         templateUrl: 'templates/movie.html',
@@ -85,7 +106,7 @@ angular.module('popsoda', ['ionic', 'angucomplete-alt', 'ngCordova', 'ionicLazyL
       }
     },
     params: {
-      movieId: null
+      articleId: null
     }
   });
 

@@ -151,18 +151,8 @@ angular.module('popsoda.services', [])
 })
 
 .factory('Articles', function($http) {
-  var articles = [];
-
-  var imageForVideo = function (articles) {
-    var BASE_YOUTUBE_IMAGE_URL = "https://img.youtube.com/vi/";
-    var i = articles.length - 1;
-
-    for (; i >= 0; i--) {
-      if(articles[i].hero_img) {
-        hero_img = BASE_YOUTUBE_IMAGE_URL + hero_video_url.substr(hero_video_url.length - 11) + "/0.jpg";
-      }
-    };
-  }
+  var articles = [],
+      articleDetail;
 
   return{
     all: function () {
@@ -199,7 +189,6 @@ angular.module('popsoda.services', [])
         articles = response.data;
         window.localStorage.removeItem('localArticles');
         window.localStorage.setItem('localArticles', JSON.stringify(articles));
-        imageForVideo(articles);
         return articles;
       }, 
       function errorCallback() {
@@ -215,7 +204,61 @@ angular.module('popsoda.services', [])
         articles = articles.concat(newArticles);
         return newArticles;
       });
+    },
+
+    getDetails: function (articleId) {
+      return $http.get("https://popsoda.mobi/api/index.php/getarticle/" + articleId)
+      .then(function successCallback (response) {
+        articleDetail = response.data;
+        return articleDetail;
+      },
+      function errorCallback () {
+        console.error("Cannot fetch article detail at the moment");
+      })
     }
+  }
+})
+
+.factory('Trends', function ($http) {
+  
+  var trends = [];
+
+  return {
+
+    all: function (argument) {
+      if(trends.length > 0) {
+        return trends;
+      }
+      else {
+        trends = JSON.parse(window.localStorage.getItem('localTrends'));
+        console.log("Fetched from local");
+        return trends;
+      }
+    },
+
+    getFeed: function () {
+      return $http.get("https://popsoda.mobi/api/index.php/twitter/0/10")
+      .then(function successCallback(response){
+        trends = response.data;
+        window.localStorage.removeItem('localTrends');
+        window.localStorage.setItem('localTrends', JSON.stringify(trends));
+        return trends;
+      }, 
+      function errorCallback() {
+        trends = JSON.parse(window.localStorage.getItem('localTrends'));
+        console.log("Fetched from local");
+        return trends;
+      });
+    },
+
+    getMore: function (lastTrend) {
+      return $http.get("https://popsoda.mobi/api/index.php/twitter/" + lastTrend + "/10").then(function(response){
+        var newTrends = response.data;
+        trends = trends.concat(newTrends);
+        return newTrends;
+      });
+    }
+
   }
 })
 

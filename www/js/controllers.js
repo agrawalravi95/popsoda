@@ -128,10 +128,12 @@ angular.module('popsoda.controllers', [])
   var lastArticle,
       lastMovie,
       movieLoadAble = false,
-      articleLoadAble = false;
+      articleLoadAble = false,
+      YOUTUBE_IMAGE_URL = "http://img.youtube.com/vi/";
 
   // Initialize Movies
   $scope.movies = Movies.all();
+  $scope.articles = Articles.all();
   $scope.movieLoadAble = movieLoadAble;
   $scope.articLeloadAble = articleLoadAble;
 
@@ -147,7 +149,7 @@ angular.module('popsoda.controllers', [])
     $scope.articles = articles;
     lastArticle = articles[articles.length - 1].article_id;
     articleLoadAble = true;
-  })
+  });
 
   $scope.moreDataAvailable = function() {
     return true;
@@ -217,50 +219,55 @@ angular.module('popsoda.controllers', [])
 
 // Trending Pages Controller
 
-.controller('TrendingCtrl', function($scope, Chats, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
+.controller('TrendingCtrl', function($scope, Trends, $ionicSlideBoxDelegate) {
+
+  var lastTrend,
+      trendLoadAble = false;
+
+  //Initialize Trends
+  $scope.trends = Trends.all();
+  $scope.trendLoadAble = trendLoadAble;
+
+  //Get Feed of Trends
+  Trends.getFeed().then(function (trends) {
+    $scope.trends = trends;
+    lastTrend = trends[trends.length - 1].movie_id;
+    trendLoadAble = true;
+  });
+
+  $scope.moreDataAvailable = function() {
+    return true;
+  };
+
+  //Load More Trends on Infinite Scroll
+  $scope.loadMoreTrends = function() {
+
+    if(isNaN(lastTrend)==false && trendLoadAble == true) {
+      
+      // Lock the function call and show loading div
+      trendLoadAble = false;
+      $scope.trendLoadAble = false;
+
+      // Get More Trends Function Call
+      Trends.getMore(lastTrend).then(function(trends){
+        
+        $scope.trends = $scope.trends.concat(trends);
+        lastArticle = trends[trends.length - 1].movie_id;  
+        
+        // Release Function Lock
+        trendLoadAble = true;
+        $scope.trendLoadAble = true;
+      });
+    }
+
+    // Mark end of Infinite Scroll
+    $scope.$broadcast('scroll.infiniteScrollComplete');
+  };
 
   $scope.followers = [{'image':'http://placehold.it/40x40'}];
   $scope.count = 234;
-
-  $scope.trends = [{
-    'movie_id': '1',
-    'movie_name' : 'Mockingjay',
-    'image' : 'http://placehold.it/360x180',
-    'follow' : '0',
-    'tweet1' : {
-      'tweet_text' : 'Tweet this bitch ahsdjasjkdashdkasdhjashdkjashdkashdkahsdkajhdka',
-      'tweet_retweet' : '12',
-      'tweet_favorite' : '4',
-      'tweet_time' : '26m'
-    },
-    'tweet2' : {
-      'tweet_text' : 'Tweet this bitch',
-      'tweet_retweet' : '12',
-      'tweet_favorite' : '4',
-      'tweet_time' : '2d'
-    }
-  },
-  {
-    'movie_id': '2',
-    'movie_name' : 'Mockingjay',
-    'image' : 'http://placehold.it/360x180',
-    'follow' : '1',
-    'tweet1' : {
-      'tweet_text' : 'Tweet this bitch',
-      'tweet_retweet' : '12',
-      'tweet_favorite' : '4',
-      'tweet_time' : '26m'
-    },
-    'tweet2' : {
-      'tweet_text' : 'Tweet this bitch',
-      'tweet_retweet' : '12',
-      'tweet_favorite' : '4',
-      'tweet_time' : '2d'
-    }
-  }];
-
-  console.log($scope.trends[0].tweet1);
 })
+
 
 // Trailer Controller
 
@@ -311,6 +318,7 @@ angular.module('popsoda.controllers', [])
   $scope.movie = Movies.get($stateParams.movieId);
 
   Movies.getDetails($stateParams.movieId).then(function (movieDetail) {
+    $scope.name = movieDetail.movie_name;
     $scope.description = movieDetail.description;
     $scope.image = movieDetail.image;
     $scope.director = movieDetail.directors;
@@ -376,3 +384,55 @@ angular.module('popsoda.controllers', [])
 
 })
 
+.controller('ArticleCtrl', function($scope, $stateParams, Articles, $cordovaSocialSharing, $sce, $ionicScrollDelegate){
+
+    var YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/";
+    
+    $scope.article = Articles.get($stateParams.articleId);
+    Articles.getDetails($stateParams.articleId).then(function (articleDetail) {
+
+      $scope.videoWidth = window.screen.width;
+      $scope.title = articleDetail.title;
+      $scope.content = articleDetail.content;
+      $scope.image = articleDetail.hero_image;
+
+      //Check if video
+
+      if(articleDetail.hero_video_url == false) {
+        $scope.hasVideo = false;
+      }
+      else {
+        $scope.video = $sce.trustAsResourceUrl(YOUTUBE_EMBED_URL + articleDetail.hero_video_url);
+        $scope.hasVideo = true;
+      }
+
+      $scope.source = articleDetail.source;
+      $scope.movieName = articleDetail.movie_name;
+      $scope.tags = articleDetail.tags;
+      $scope.date = articleDetail.publishedon;
+      $scope.likes = articleDetail.likes;
+    })
+
+    $scope.goBack = function() {
+          // $ionicHistory.goBack();                      //This doesn't work
+          window.history.back();                          //This works
+    }
+
+    $scope.sharearticle = function (article) {
+      $cordovaSocialSharing.share(article.title, null, article.image, "http://agrawalravi.com");
+    }
+
+    var articleHeader = angular.element(document.querySelector('.article-header'));
+
+
+    $scope.scrollHandler = function (argument) {
+      if($ionicScrollDelegate.getScrollPosition().top >= 80) {
+        articleHeader.addClass('scrolled');
+
+        
+      }
+      else {
+        articleHeader.removeClass('scrolled');
+      }
+    }
+});
