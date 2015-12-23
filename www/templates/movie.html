@@ -1,0 +1,68 @@
+<ion-view name="{{movie.name}}" class="movie-content">
+  <div class="movie-header">
+  		<i class="icon ion-ios-arrow-back back-icon" ng-click="goBack()"></i>
+	    <h4 class="movie-title">{{movie.name}}</h4>
+			<i class="icon ion-android-share-alt share-icon" ng-click="shareMovie(movie)"></i>
+  	</div>
+  <ion-content class="movie-detail-container" on-scroll="scrollHandler()">
+  		<div class="transparent">
+  		</div>
+  		<div class="movie-detail">
+
+
+  			<div ng-controller="FollowCtrl">
+  				<a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie)" name="followBtn"> {{ movie.follow == 1 ? "Following" : "Follow" }} </a>
+  			</div>
+
+				<div class="followers-container">
+					<ion-list class="followers-list">
+						<ion-item class="follower" ng-repeat="follower in followers track by $index">
+							<img ng-src="{{ :: follower.image }}">
+						</ion-item>
+
+						<span class="followers-count">
+							+ {{ :: count}} Followers
+						</span>
+					</ion-list>
+				</div>
+
+				<p class="movie-description">
+					{{ :: description}}
+				</p>
+
+				<p class="movie-director">
+					<strong>Director: </strong>
+					{{ :: director}}
+				</p>
+
+				<p class="movie-director">
+					<strong>Stars: </strong>
+					{{ :: cast}}
+				</p>
+
+				<div class="tags-container">
+					<div ng-repeat="tag in tags track by tag.tag_name" ng-click="tagClick()" class="movie-tag"> {{ :: tag.tag_name }}</div>
+				</div>
+
+				<ion-list class="articles-list">
+					<ion-item class="movie-article item item-thumbnail-left" ng-repeat="article in articles track by $index" ui-sref="article({articleId : article.id})">
+
+						<img src="{{ :: article.image }}">
+						<h3> {{ :: article.title }}</h3>
+
+						<span class="article-source"> {{ :: article.source }} </span>
+
+						<span class="article-time">
+							<i class="icon ion-android-time"></i> {{ :: article.time}}
+						</span>
+						
+					</ion-item>
+				</ion-list>
+
+  		</div>
+  </ion-content>
+    <div class="movie-image">
+  		<div class="overlay"></div>
+  		<img image-lazy-src="{{ :: image }}" image-lazy-loader="crescent">
+  	</div>
+</ion-view>

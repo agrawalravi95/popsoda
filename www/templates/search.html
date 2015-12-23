@@ -1,0 +1,30 @@
+<ion-view view-title="Search">
+	<ion-content class="search-content">
+	  
+	  <div class="search-input">
+	    <i class="icon ion-search placeholder-icon search-icon"></i>
+	    <i ng-if="data.search.length" ng-click="cancelSearch()" class="icon ion-android-cancel placeholder-icon cancel-icon"></i>
+	    <input 
+	    type="text"
+	    placeholder="Search for movies, directors, actors etc..." 
+	    ng-change="search()"
+	    ng-model="data.search"
+	    >
+	  </div>
+
+	  <ion-list ng-if="data.search.length  && searchResultClick" class="search-result">
+	  	<ion-item ng-if="data.search.length && !data.tags.length" class="result--none">
+	  		No Results Found
+	  	</ion-item>
+			<ion-item ng-repeat="tag in data.tags track by $index" class="result" ng-click="searchResultClicked(tag)">
+				{{tag.name}}
+			</ion-item>
+	  </ion-list>
+		
+		<div class="search-none" ng-if="searchResultClick">
+			<div class="search-friends">
+				<span>Movies that your friends follow</span>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

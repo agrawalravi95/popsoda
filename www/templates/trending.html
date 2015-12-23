@@ -1,0 +1,94 @@
+<ion-view view-title="Trending" class="trending-content">
+  <ion-content>
+
+    <ion-list class="trends-list">
+      <ion-item class="trend-container" ng-repeat="trend in trends">
+        <div class="image-container">
+          
+          <div class="overlay"></div>
+          <h2 class="trend-movie-title">{{ :: trend.movie_name | limitTo: 30}}<span>{{trend.movie_name.length > 30 ? '...' : ''}}</span></h2>
+          <img ng-src="{{trend.image}}" class="trend-movie-img">
+        </div>
+
+        <div class="movie-detail">
+          <div class="followers-container">
+            <ion-list class="followers-list">
+              <ion-item class="follower" ng-repeat="follower in followers track by $index">
+                <img ng-src="{{ :: follower.image }}">
+              </ion-item>
+
+              <span class="followers-count">
+                + {{ :: count}} Followers
+              </span>
+
+              <div ng-controller="FollowCtrl" class="follow-container">
+                <a class="followBtn" ng-class="{ follow : trend.follow == 0, following: trend.follow == 1 }" ng-click="toggleFollow(trend)" name="followBtn"> {{ trend.follow == 1 ? "Following" : "Follow" }} </a>
+              </div>
+            </ion-list>
+          </div>
+
+          <div class="tweet-container">
+            <div class="circle-container">
+              <div class="outer-circle">
+                <div class="inner-circle"></div>
+              </div>
+            </div>
+
+            <span class="tweet-time">
+              {{ :: trend.tweet1.tweet_time}}
+            </span>
+            <div class="tweet-text">
+              {{ :: trend.tweet1.tweet_text}}
+            </div>
+            <span class="tweet-retweet">
+              <i class="icon ion-arrow-return-left"></i>
+              {{ :: trend.tweet1.tweet_retweet}}
+            </span>
+
+            <span class="tweet-favorite">
+              <i class="icon ion-ios-heart"></i>
+              {{ :: trend.tweet1.tweet_favorite}}
+            </span>
+          </div>
+
+          <div class="tweet-container">
+            <div class="circle-container">
+              <div class="outer-circle">
+                <div class="inner-circle"></div>
+              </div>
+            </div>
+            <span class="tweet-time">
+              {{ :: trend.tweet2.tweet_time}}
+            </span>
+            <div class="tweet-text">
+              {{ :: trend.tweet2.tweet_text}}
+            </div>
+            <span class="tweet-retweet">
+              <i class="icon ion-arrow-return-left"></i>
+              {{ :: trend.tweet2.tweet_retweet}}
+            </span>
+
+            <span class="tweet-favorite">
+              <i class="icon ion-ios-heart"></i>
+              {{ :: trend.tweet2.tweet_favorite}}
+            </span>
+          </div>
+
+        </div>
+        <div class="horizontal-line"></div>
+      </ion-item>
+    </ion-list>
+
+    <div class="trend-container trend--loading" ng-show="!trendLoadAble">
+      <div class="loading"></div>
+    </div>
+
+    <ion-infinite-scroll
+      ng-if="moreDataAvailable()"
+      on-infinite="loadMoreTrends()"
+      distance="10%">
+    </ion-infinite-scroll>
+    <!-- <div class="clearfix"></div> -->
+
+  </ion-content>
+</ion-view>

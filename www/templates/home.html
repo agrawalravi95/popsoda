@@ -1,0 +1,60 @@
+<ion-view view-title="Home">
+  <ion-content lazy-scroll>
+
+    <div class="discover-movies">
+      <span>Discover movies to follow</span>
+      <span class="view-all" ng-click="loadMoreMovies()">View All
+      <i class="icon ion-ios-arrow-forward"></i></span>
+    </div>
+
+    <ion-list class="list-inset movie-list">
+    
+      <ion-item class="movie-recommended" ng-repeat="movie in movies track by movie.movie_id">
+
+        <div ng-controller="FollowCtrl">
+          <h2>{{ ::movie.name | limitTo: 27}}<span>{{ movie.name.length > 27 ? '...' : ' '}}
+          </span>
+          </h2>
+
+          <a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie)" name="followBtn"> {{ movie.follow == 1 ? "Following" : "Follow" }} </a>
+
+          <div class="overlay" ui-sref="movie({movieId: movie.movie_id})"></div>
+
+          <img image-lazy-src="{{ ::movie.image }}" image-lazy-distance-from-bottom-to-load="300" class="movie-img" >
+
+        </div>
+      </ion-item>
+        
+    </ion-list>
+
+    <div class="popular-articles">
+      <span>Popular Articles</span>
+      <span class="time">
+      <i class="icon ion-android-time"></i>
+      20h ago </span>
+    </div>
+
+    <ion-list class="list-inset article-list">
+      <ion-item class="article-popular" ng-repeat="article in articles track by article.article_id">
+
+        <h2> {{ ::article.title | limitTo: 27}}<span>{{ article.title.length > 27 ? '...' : ' ' }}
+        </span></h2>
+        
+        <div class="overlay" ui-sref="article({articleId: article.article_id})"></div>
+
+        <img image-lazy-src="{{ article.hero_image.length < 1 ? 'http://img.youtube.com/vi/' + article.hero_video_url + '/0.jpg' : article.hero_image }}" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent" class="article-img" >
+      </ion-item>
+
+      <div class="movie-recommended movie--loading" ng-show="!articleLoadAble">
+        <div class="loading"></div>
+      </div>
+    </ion-list>
+
+    <ion-infinite-scroll
+      ng-if="moreDataAvailable()"
+      on-infinite="loadMoreArticles()"
+      distance="10%">
+    </ion-infinite-scroll>
+
+  </ion-content>
+</ion-view>
