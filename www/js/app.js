@@ -49,7 +49,7 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
 
   $ionicConfigProvider.views.maxCache(5);
   $ionicConfigProvider.scrolling.jsScrolling(false);
-
+  $ionicNativeTransitionsProvider.enable(true);
   $ionicNativeTransitionsProvider.setDefaultOptions({
         duration: 400, // in milliseconds (ms), default 400,
         slowdownfactor: 4, // overlap views (higher number is more) or no overlap (1), default 4
@@ -59,17 +59,7 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
         fixedPixelsTop: 0, // the number of pixels of your fixed header, default 0 (iOS and Android)
         fixedPixelsBottom: 0, // the number of pixels of your fixed footer (f.i. a tab bar), default 0 (iOS and Android)
         triggerTransitionEvent: '$ionicView.afterEnter', // internal ionic-native-transitions option
-        backInOppositeDirection: false // Takes over default back transition and state back transition to use the opposite direction transition to go back
-    });
-
-    $ionicNativeTransitionsProvider.setDefaultTransition({
-        type: 'slide',
-        direction: 'left'
-    });
-
-    $ionicNativeTransitionsProvider.setDefaultBackTransition({
-        type: 'slide',
-        direction: 'right'
+        backInOppositeDirection: true // Takes over default back transition and state back transition to use the opposite direction transition to go back
     });
 
 

@@ -1,185 +1,254 @@
 angular.module('popsoda.controllers', [])
 
-
-// Tabs and Slide Controller
+///////////////////////////////
+// Tabs and Slide Controller //
+///////////////////////////////
 
 .controller('TabSlideCtrl', function($scope, $ionicSlideBoxDelegate, $state, $ionicHistory) {
     console.log($ionicHistory.viewHistory());
+
 })
 
-// Welcome Controller
+////////////////////////
+// Welcome Controller //
+////////////////////////
 
 .controller('WelcomeCtrl', function($scope, $state, $q, User, $ionicLoading) {
 
-  $scope.facebookSignIn = function() {
-      $cordovaOauth.facebook("1523912164589911", ["email"]).then(function(result) {
-          console.log("Success");
-      }, function(error) {
-          console.log("Error");
-      });
+  // Initialize user from localstorage
+  var loggedIn = false,
+      user = User.getUser(),
+      authresponse;
+  
+  // initialize Scope
+  $scope.loggedIn = false;
+
+  var checkLoginState = function () {
+    
+    user = User.getUser();
+
+    if(user !== undefined && user.hasOwnProperty('status') && user.status == "connected") {  
+
+      loggedIn = true;
+      $scope.$parent.loggedIn = true;
+
+      return true;
+    }
+
+    loggedIn = false;
+    $scope.loggedIn = false;
+    $scope.$parent.loggedIn = false;
+
+    return false;
+  };
+
+  //Check LogIn at start of application
+  checkLoginState();
+
+  //Success call for Facebook log in 
+  var fbLoginSuccess = function (userData) {
+      console.log("Scope= " + $scope.loggedIn + " Scope Parent= " + $scope.$parent.loggedIn);
+
+      User.setUser(userData);
+      loggedIn = true;
+      $scope.loggedIn = true;
+      $scope.$parent.loggedIn = true;
+
+      $state.go('app.tabs');
   }
 
-  // // This is the success callback from the login method
-  // var fbLoginSuccess = function(response) {
-  //   if (!response.authResponse){
-  //     fbLoginError("Cannot find the authResponse");
-  //     return;
-  //   }
+  //Handle Facebook Signin Click
+  $scope.facebookSignIn = function() {
 
-  //   var authResponse = response.authResponse;
+    var deferred = $q.defer();
+    facebookConnectPlugin.login(["public_profile", "user_friends", "email"],
+        fbLoginSuccess,
+        function (error) { alert("" + error) }
+    );
+  }
 
-  //   getFacebookProfileInfo(authResponse)
-  //   .then(function(profileInfo) {
-  //     // For the purpose of this example I will store user data on local storage
-  //     User.setUser({
-  //       authResponse: authResponse,
-  //       userID: profileInfo.id,
-  //       name: profileInfo.name,
-  //       email: profileInfo.email,
-  //       picture : "http://graph.facebook.com/" + authResponse.userID + "/picture?type=large"
-  //     });
-  //     $ionicLoading.hide();
-  //     $state.go('app.home');
-  //   }, function(fail){
-  //     // Fail get profile info
-  //     console.log('profile info fail', fail);
-  //   });
-  // };
+  //Handle skip signin click
+  $scope.skipSignIn = function () {
+    
+    user = {
+      'username' : 'popsoda',
+      'fbuser'   : 'no' 
+    };
 
-  // // This is the fail callback from the login method
-  // var fbLoginError = function(error){
-  //   console.log('fbLoginError', error);
-  //   $ionicLoading.hide();
-  // };
+    loggedIn = true;
+    $scope.loggedIn = true;
+    $scope.$parent.loggedIn = true;
 
-  // // This method is to get the user profile info from the facebook api
-  // var getFacebookProfileInfo = function (authResponse) {
-  //   var info = $q.defer();
+    User.setUser(user);
 
-  //   facebookConnectPlugin.api('/me?fields=email,name&access_token=' + authResponse.accessToken, null,
-  //     function (response) {
-  //       console.log(response);
-  //       info.resolve(response);
-  //     },
-  //     function (response) {
-  //       console.log(response);
-  //       info.reject(response);
-  //     }
-  //   );
-  //   return info.promise;
-  // };
+    console.log("Scope= " + $scope.loggedIn + " Scope Parent= " + $scope.$parent.loggedIn);
+  }
 
-  // //This method is executed when the user press the "Login with facebook" button
-  // $scope.facebookSignIn = function() {
-  //   facebookConnectPlugin.getLoginStatus(function(success){
-  //     if(success.status === 'connected'){
-  //       // The user is logged in and has authenticated your app, and response.authResponse supplies
-  //       // the user's ID, a valid access token, a signed request, and the time the access token
-  //       // and signed request each expire
-  //       console.log('getLoginStatus', success.status);
-
-  //       // Check if we have our user saved
-  //       var user = User.getUser('facebook');
-
-  //       if(!user.userID){
-  //         getFacebookProfileInfo(success.authResponse)
-  //         .then(function(profileInfo) {
-  //           // For the purpose of this example I will store user data on local storage
-  //           User.setUser({
-  //             authResponse: success.authResponse,
-  //             userID: profileInfo.id,
-  //             name: profileInfo.name,
-  //             email: profileInfo.email,
-  //             picture : "http://graph.facebook.com/" + success.authResponse.userID + "/picture?type=large"
-  //           });
-
-  //           $state.go('app.home');
-  //         }, function(fail){
-  //           // Fail get profile info
-  //           console.log('profile info fail', fail);
-  //         });
-  //       }else{
-  //         $state.go('app.home');
-  //       }
-  //     } else {
-  //       // If (success.status === 'not_authorized') the user is logged in to Facebook,
-  //       // but has not authenticated your app
-  //       // Else the person is not logged into Facebook,
-  //       // so we're not sure if they are logged into this app or not.
-
-  //       console.log('getLoginStatus', success.status);
-
-  //       $ionicLoading.show({
-  //         template: 'Logging in...'
-  //       });
-
-  //       // Ask the permissions you need. You can learn more about
-  //       // FB permissions here: https://developers.facebook.com/docs/facebook-login/permissions/v2.4
-  //       facebookConnectPlugin.login(['email', 'public_profile'], fbLoginSuccess, fbLoginError);
-  //     }
-  //   });
-  // };
 })
 
-// Home Page Controller
+/////////////////////
+// Home Controller //
+/////////////////////
 
-.controller('HomeCtrl', function($scope, Movies, Articles, $ionicPopup, $timeout, $ionicSlideBoxDelegate) {
+.controller('HomeCtrl', function($scope, Movies, Articles, $timeout, $ionicSlideBoxDelegate, $ionicScrollDelegate) {
 
+  //Initialize and declare controller variables
   var lastArticle,
       lastMovie,
       movieLoadAble = false,
+      viewAllMoviesToggle = false,
       articleLoadAble = false,
-      YOUTUBE_IMAGE_URL = "http://img.youtube.com/vi/";
+      discoverMoviesToggle = true,
+      continuePolling = true,
+      pollPopupToggle = false;
+      YOUTUBE_IMAGE_URL = "http://img.youtube.com/vi/",
+      TIME_FOR_POLL = 10000;
 
   // Initialize Movies
   $scope.movies = Movies.all();
   $scope.articles = Articles.all();
   $scope.movieLoadAble = movieLoadAble;
   $scope.articLeloadAble = articleLoadAble;
+  $scope.viewAllMoviesToggle = viewAllMoviesToggle;
+  $scope.discoverMoviesToggle = discoverMoviesToggle;
 
   
   // Get Initial Feed from API
   Movies.getFeed().then(function(movies){
     $scope.movies = movies;
-    lastMovie = movies[movies.length - 1].movie_id;
+    lastMovie = movies[movies.length - 1].createdon;
     movieLoadAble = true;
   });
 
   Articles.getFeed().then(function (articles) {
     $scope.articles = articles;
-    lastArticle = articles[articles.length - 1].article_id;
+    lastArticle = articles[articles.length - 1].createdon;
     articleLoadAble = true;
+
+    $scope.latestArticleTime = articles[0].createdon;
   });
 
-  $scope.moreDataAvailable = function() {
-    return true;
-  }
+  //Get Human friendly date
+  $scope.prettyDate = function(time){
+    var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
+        diff = (((new Date()).getTime() - date.getTime()) / 1000),
+        day_diff = Math.floor(diff / 86400);
+            
+    if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
+        return;
+            
+    return day_diff == 0 && (
+            diff < 60 && "now" ||
+            diff < 120 && "1m" ||
+            diff < 3600 && Math.floor( diff / 60 ) + "m" ||
+            diff < 7200 && "1h" ||
+            diff < 86400 && Math.floor( diff / 3600 ) + "h") ||
+        day_diff == 1 && "1d" ||
+        day_diff < 7 && day_diff + "d" ||
+        day_diff < 31 && Math.ceil( day_diff / 7 ) + "w";
+  };
 
-  $scope.loadMoreMovies = function () {
-    if(isNaN(lastMovie)==false && movieLoadAble == true) {
+  //Check if more articles are available for infinite load
+  $scope.moreArticlesAvailable = function() {
+    var articles = Articles.all(),
+        lastObject = articles[articles.length - 1];
+
+    if(lastObject.hasOwnProperty('result') && lastObject.result == "404") {
+      articleLoadAble = true;
+      $scope.articleLoadAble = true;
+      continuePolling = false;
+      return false;
+    }
+
+    return true;
+  };
+
+  //Check if more movies are available for infinite load
+  $scope.moreMoviesAvailable = function() {
+    var movies = Movies.all(),
+        lastObject = movies[movies.length - 1];
+
+    if(lastObject.hasOwnProperty('result') && lastObject.result == "404") {
+      movieLoadAble = true;
+      $scope.movieLoadAble = true;
+
+
+      return false;
+    }
+
+    return true;
+  };
+
+  //Function to handle View All Movies Click
+  $scope.viewAllMovies = function() {
+
+    viewAllMoviesToggle = true;
+    $scope.viewAllMoviesToggle = true;
+
+    console.log("Here");
+
+
+    if(lastMovie && movieLoadAble == true) {
       //Lock the function call
       movieLoadAble = false;
       $scope.movieLoadAble = false;
 
+      console.log("Here");
+
       //Get More Movies Function Call
       Movies.getMore(lastMovie).then(function (movies) {
-        
+
         $scope.movies = $scope.movies.concat(movies);
-        lastMovie = movies[movies.length - 1].movie_id;
+        lastMovie = movies[movies.length - 1].createdon;
 
         //Release Function Lock
         movieLoadAble = true;
         $scope.movieLoadAble = true;
       });
     }
-  }
+  };
 
+  //Function to handle Hide All Movies Click
+  $scope.hideAllMovies = function() {
+    viewAllMoviesToggle = false;
+    $scope.viewAllMoviesToggle = false;
+    discoverMoviesToggle = false;
+    $scope.discoverMoviesToggle = false;
+  };
+
+  //Load More Movies on Infinite Scroll
+  $scope.loadMoreMovies = function() {
+
+    if(lastMovie && movieLoadAble == true) {
+      
+      // Lock the function call and show loading div
+      movieLoadAble = false;
+      $scope.movieLoadAble = false;
+
+      // Get More Articles Function Call
+      Movies.getMore(lastMovie).then(function(movies){
+        
+        if(movies[movies.length - 1].hasOwnProperty('movie_id'))
+          {
+            $scope.movies = $scope.movies.concat(movies);
+            lastMovie = movies[movies.length - 1].createdon;
+          }
+        
+        // Release Function Lock
+        movieLoadAble = true;
+        $scope.movieLoadAble = true;
+      });
+    }
+
+    // Mark end of Infinite Scroll
+    $scope.$broadcast('scroll.infiniteScrollComplete');
+  };
+
+  //Load More Articles on Infinite Scroll
   $scope.loadMoreArticles = function() {
 
-    if(isNaN(lastArticle)==false && articleLoadAble == true) {
+    if(lastArticle && articleLoadAble == true) {
       
-      console.log(lastArticle);
-
       // Lock the function call and show loading div
       articleLoadAble = false;
       $scope.articleLoadAble = false;
@@ -187,8 +256,13 @@ angular.module('popsoda.controllers', [])
       // Get More Articles Function Call
       Articles.getMore(lastArticle).then(function(articles){
         
-        $scope.articles = $scope.articles.concat(articles);
-        lastArticle = articles[articles.length - 1].article_id;  
+        if(articles[articles.length - 1].hasOwnProperty('article_id')) {
+            $scope.articles = $scope.articles.concat(articles);
+            lastArticle = articles[articles.length - 1].createdon;
+          }
+
+        // Start Polling
+        pollArticles();
         
         // Release Function Lock
         articleLoadAble = true;
@@ -199,9 +273,54 @@ angular.module('popsoda.controllers', [])
     // Mark end of Infinite Scroll
     $scope.$broadcast('scroll.infiniteScrollComplete');
   };
+
+
+  //Poll for new articles and popup handler
+  var pollArticles = function() {
+
+    //Stop Polling once reached end of data
+    if(continuePolling == false) return;
+
+    console.log("Polling");
+
+    //Call for Articles Poll function from service
+    Articles.poll($scope.articles[0].createdon).then(function(articles) {
+      
+      // If no articles to add
+      if(articles.hasOwnProperty('result') && articles.result == '404') {
+        $timeout(pollArticles, TIME_FOR_POLL);
+        return;
+      }
+
+      //Show Popup
+      $scope.pollPopupToggle = true;
+      $scope.pollCount = articles.length;
+
+      //Close Popup
+      $timeout(function() {
+        $scope.pollPopupToggle = false;
+      }, 3000);
+      
+      for (var i = articles.length - 1; i >= 0; i--) {
+        $scope.articles.unshift(articles[i]);
+        Articles.unshift(articles[i]);
+      };
+      // Add articles to 
+      
+      $timeout(pollArticles, TIME_FOR_POLL);
+    });
+  };
+
+  //Scroll To Top After Clicking Poll Popup
+  $scope.scrollToTop = function() {
+    $ionicScrollDelegate.scrollTop(true);
+    $scope.pollPopupToggle = false;
+  };
 })
 
-// Home ===> Follow Movies Controller
+//////////////////////////////
+// Follow Movies Controller //
+//////////////////////////////
 
 .controller('FollowCtrl',function($scope, $element, $ionicPopup, $timeout, Movies) {
     
@@ -217,12 +336,34 @@ angular.module('popsoda.controllers', [])
     };
 })
 
-// Trending Pages Controller
+
+///////////////////////////////
+// Trending Pages Controller //
+///////////////////////////////
 
 .controller('TrendingCtrl', function($scope, Trends, $ionicSlideBoxDelegate) {
 
   var lastTrend,
       trendLoadAble = false;
+
+  $scope.prettyDate = function(time){
+    var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
+        diff = (((new Date()).getTime() - date.getTime()) / 1000),
+        day_diff = Math.floor(diff / 86400);
+            
+    if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
+        return;
+            
+    return day_diff == 0 && (
+            diff < 60 && "now" ||
+            diff < 120 && "1m" ||
+            diff < 3600 && Math.floor( diff / 60 ) + "m" ||
+            diff < 7200 && "1h" ||
+            diff < 86400 && Math.floor( diff / 3600 ) + "h") ||
+        day_diff == 1 && "1d" ||
+        day_diff < 7 && day_diff + "d" ||
+        day_diff < 31 && Math.ceil( day_diff / 7 ) + "w";
+  };
 
   //Initialize Trends
   $scope.trends = Trends.all();
@@ -231,18 +372,30 @@ angular.module('popsoda.controllers', [])
   //Get Feed of Trends
   Trends.getFeed().then(function (trends) {
     $scope.trends = trends;
-    lastTrend = trends[trends.length - 1].movie_id;
+    lastTrend = trends[trends.length - 1].createdon;
     trendLoadAble = true;
   });
 
+  //Check for End of Data on Infinite Scroll
   $scope.moreDataAvailable = function() {
+    var trends = Trends.all(),
+        lastObject = trends[trends.length - 1];
+
+    //Check for 404 in returned data
+    if(lastObject.hasOwnProperty('result') && lastObject.result == "404") {
+      trendLoadAble = true;
+      $scope.trendLoadAble = true;
+
+      return false;
+    }
+
     return true;
   };
 
   //Load More Trends on Infinite Scroll
   $scope.loadMoreTrends = function() {
 
-    if(isNaN(lastTrend)==false && trendLoadAble == true) {
+    if(lastTrend && trendLoadAble == true) {
       
       // Lock the function call and show loading div
       trendLoadAble = false;
@@ -252,7 +405,7 @@ angular.module('popsoda.controllers', [])
       Trends.getMore(lastTrend).then(function(trends){
         
         $scope.trends = $scope.trends.concat(trends);
-        lastArticle = trends[trends.length - 1].movie_id;  
+        lastArticle = trends[trends.length - 1].createdon;  
         
         // Release Function Lock
         trendLoadAble = true;
@@ -264,12 +417,25 @@ angular.module('popsoda.controllers', [])
     $scope.$broadcast('scroll.infiniteScrollComplete');
   };
 
+  //Handle Retweet Click
+  $scope.retweetHandler = function(tweetID) {
+    Trends.retweet(tweetID);
+    console.log("Here retweet");
+  }
+
+  //Handle Retweet Click
+  $scope.favoriteHandler = function(tweetID) {
+    Trends.favorite(tweetID);
+    console.log("Here favorite");
+  }
+
   $scope.followers = [{'image':'http://placehold.it/40x40'}];
   $scope.count = 234;
 })
 
-
-// Trailer Controller
+////////////////////////
+// Trailer Controller //
+////////////////////////
 
 .controller('TrailersCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
 
@@ -278,7 +444,10 @@ angular.module('popsoda.controllers', [])
   };
 })
 
-//Search Controller
+///////////////////////
+// Search Controller //
+///////////////////////
+
 
 .controller('SearchCtrl', function($scope, Searches) {
   
@@ -305,13 +474,18 @@ angular.module('popsoda.controllers', [])
   }
 })
 
-//Profile Controller
+////////////////////////
+// Profile Controller //
+////////////////////////
 
 .controller('ProfileCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
 
 })
 
-//Article Detail Controller
+/////////////////////////////
+// Movie Detail Controller //
+/////////////////////////////
+
 
 .controller('MovieCtrl', function($scope, $stateParams, Movies, $cordovaSocialSharing, $ionicScrollDelegate){
 
@@ -320,10 +494,14 @@ angular.module('popsoda.controllers', [])
   Movies.getDetails($stateParams.movieId).then(function (movieDetail) {
     $scope.name = movieDetail.movie_name;
     $scope.description = movieDetail.description;
-    $scope.image = movieDetail.image;
     $scope.director = movieDetail.directors;
     $scope.cast = movieDetail.actors;
     $scope.tags = movieDetail.tags;
+    $scope.articles = movieDetail.related_articles;
+
+    setTimeout(function() {
+      $scope.image = movieDetail.image;
+    }, 1000);
   })
 
   
@@ -332,10 +510,12 @@ angular.module('popsoda.controllers', [])
         window.history.back();                          //This works
   }
 
+  // Handle Share Movie Click 
   $scope.shareMovie = function (movie) {
     $cordovaSocialSharing.share("movie.name", null, "movie.image", "http://agrawalravi.com");
   }
 
+  // Handle Scroll - Hide and Unhide 
   $scope.scrollHandler = function () {
       var movieTitle = angular.element(document.querySelector('.movie-title')),
           movieBackIcon = angular.element(document.querySelector('.back-icon'));
@@ -356,33 +536,37 @@ angular.module('popsoda.controllers', [])
       }
   }
 
+  //Get Human Readable Date
+  $scope.prettyDate = function(time){
+    var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
+        diff = (((new Date()).getTime() - date.getTime()) / 1000),
+        day_diff = Math.floor(diff / 86400);
+            
+    if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
+        return;
+            
+    return day_diff == 0 && (
+            diff < 60 && "now" ||
+            diff < 120 && "1m" ||
+            diff < 3600 && Math.floor( diff / 60 ) + "m" ||
+            diff < 7200 && "1h" ||
+            diff < 86400 && Math.floor( diff / 3600 ) + "h") ||
+        day_diff == 1 && "1d" ||
+        day_diff < 7 && day_diff + "d" ||
+        day_diff < 31 && Math.ceil( day_diff / 7 ) + "w";
+  }
+
   // Random Data
 
   $scope.followers = [{'image':'http://placehold.it/40x40'}, {'image':'http://placehold.it/40x40'}, {'image':'http://placehold.it/40x40'}];
   $scope.count = 234;
 
-  $scope.articles = [{
-    'id' : '1',
-    'title' : 'The Recap: Logo Dimensions, The Peanuts Movie and Angry Birds',
-    'image' : 'http://placehold.it/125x125',
-    'source' : 'cinetime.com',
-    'time' : '3d'
-  }, {
-    'id' : '2',
-    'title' : 'The Recap: Logo Dimensions, The Peanuts Movie and Angry Birds',
-    'image' : 'http://placehold.it/125x125',
-    'source' : 'cinetime.com',
-    'time' : '3d'
-  }, {
-    'id' : '3',
-    'title' : 'The Recap: Logo Dimensions, The Peanuts Movie and Angry Birds',
-    'image' : 'http://placehold.it/125x125',
-    'source' : 'cinetime.com',
-    'time' : '3d'
-  }];
-
 
 })
+
+///////////////////////////////
+// Article Detail Controller //
+///////////////////////////////
 
 .controller('ArticleCtrl', function($scope, $stateParams, Articles, $cordovaSocialSharing, $sce, $ionicScrollDelegate){
 

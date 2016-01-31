@@ -2,12 +2,12 @@
   <ion-content>
 
     <ion-list class="trends-list">
-      <ion-item class="trend-container" ng-repeat="trend in trends">
+      <ion-item class="trend-container" ng-repeat="trend in trends track by trend.movie_id" ng-if="trend.tweet1.tweet_text.length > 0 && trend.tweet2.tweet_text.length > 0">
         <div class="image-container">
           
           <div class="overlay"></div>
           <h2 class="trend-movie-title">{{ :: trend.movie_name | limitTo: 30}}<span>{{trend.movie_name.length > 30 ? '...' : ''}}</span></h2>
-          <img ng-src="{{trend.image}}" class="trend-movie-img">
+          <img ng-src="{{ :: trend.image}}" class="trend-movie-img">
         </div>
 
         <div class="movie-detail">
@@ -29,23 +29,23 @@
 
           <div class="tweet-container">
             <div class="circle-container">
-              <div class="outer-circle">
+              <div class="outer-circle" style="background-color:{{ :: trend.tweet1.color}}">
                 <div class="inner-circle"></div>
               </div>
             </div>
 
             <span class="tweet-time">
-              {{ :: trend.tweet1.tweet_time}}
+              {{ :: prettyDate( trend.tweet1.created_at)}}
             </span>
             <div class="tweet-text">
               {{ :: trend.tweet1.tweet_text}}
             </div>
-            <span class="tweet-retweet">
+            <span class="tweet-retweet" ng-click="retweetHandler(trend.tweet1.tweet_id)">
               <i class="icon ion-arrow-return-left"></i>
               {{ :: trend.tweet1.tweet_retweet}}
             </span>
 
-            <span class="tweet-favorite">
+            <span class="tweet-favorite" ng-click="favoriteHandler(trend.tweet1.tweet_id)">
               <i class="icon ion-ios-heart"></i>
               {{ :: trend.tweet1.tweet_favorite}}
             </span>
@@ -53,22 +53,22 @@
 
           <div class="tweet-container">
             <div class="circle-container">
-              <div class="outer-circle">
+              <div class="outer-circle" style="background-color: {{ :: trend.tweet2.color}}">
                 <div class="inner-circle"></div>
               </div>
             </div>
             <span class="tweet-time">
-              {{ :: trend.tweet2.tweet_time}}
+              {{ :: prettyDate( trend.tweet2.created_at)}}
             </span>
             <div class="tweet-text">
               {{ :: trend.tweet2.tweet_text}}
             </div>
-            <span class="tweet-retweet">
+            <span class="tweet-retweet" ng-click="retweetHandler(trend.tweet2.tweet_id)">
               <i class="icon ion-arrow-return-left"></i>
               {{ :: trend.tweet2.tweet_retweet}}
             </span>
 
-            <span class="tweet-favorite">
+            <span class="tweet-favorite" ng-click="favoriteHandler(trend.tweet2.tweet_id)">
               <i class="icon ion-ios-heart"></i>
               {{ :: trend.tweet2.tweet_favorite}}
             </span>

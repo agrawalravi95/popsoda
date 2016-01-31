@@ -1,7 +1,8 @@
 <ion-content scroll="false">
 
-  <!-- <ion-view ng-include="'templates/welcome.html'" ng-controller="WelcomeCtrl"></ion-view> -->
-  <ion-slide-box show-pager="false" ion-slide-tabs on-slide-change="slideHasChanged()" does-continue="false">
+  <ion-view ng-hide="loggedIn == true" ng-include="'templates/welcome.html'" ng-controller="WelcomeCtrl" class="welcome-content" view-title="Welcome">{{}}</ion-view> 
+  
+  <ion-slide-box  show-pager="false" ion-slide-tabs on-slide-change="slideHasChanged()" does-continue="false">
     
     <ion-slide
       ion-slide-tab-label="<i class='ion-android-home home-icon'></i>">
@@ -27,6 +28,5 @@
       ion-slide-tab-label="<i class='ion-person profile-icon'></i>" on-drag-right="enableSlide()">
       <ion-view ng-include="'templates/profile.html'"></ion-view>
     </ion-slide>
-  
   </ion-slide-box>
 </ion-content>

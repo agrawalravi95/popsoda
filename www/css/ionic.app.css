@@ -9111,6 +9111,11 @@ html, body {
   -webkite-animation: slideInUp 1s;
   animation: slideInUp 1s; }
 
+.end-of-list {
+  padding: 2rem;
+  padding-bottom: 5rem;
+  text-align: center; }
+
 @-webkit-keyframes ripple {
   100% {
     opacity: 0;
@@ -9123,6 +9128,43 @@ html, body {
     background-position: 100% 9%; }
   100% {
     background-position: 0% 92%; } }
+
+.welcome-content {
+  background-image: url("../img/welcome_bg.png");
+  background-size: cover;
+  padding: 4rem; }
+  .welcome-content.ng-hide {
+    -webkit-animation: slideOutUp 1s;
+    animation: slideOutUp 1s; }
+  .welcome-content img.welcome__logo {
+    position: relative;
+    display: block;
+    margin: 5rem auto; }
+  .welcome-content a.facebook-sign-in {
+    border: 0;
+    padding: 1.25rem 1rem;
+    margin-top: 10rem;
+    display: block;
+    background: #547CD8;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+    border-radius: 5px; }
+    .welcome-content a.facebook-sign-in i {
+      font-size: 24px;
+      position: absolute;
+      top: 18px;
+      padding-right: 1rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.5); }
+    .welcome-content a.facebook-sign-in span {
+      margin-left: 2.5rem; }
+  .welcome-content .skip-login {
+    margin-top: 2rem;
+    font-size: 1rem;
+    color: white;
+    width: 100%;
+    text-align: center; }
 
 ion-slide {
   background-color: #f0f0f0; }
@@ -9205,16 +9247,27 @@ ion-slide {
   padding: 0 20px;
   height: 50px;
   background: #f7f7f7; }
+  .discover-movies.discover-movies--fixed,
+  .popular-articles.discover-movies--fixed {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999; }
   .discover-movies span,
   .popular-articles span {
     font-size: 14px;
     line-height: 50px; }
   .discover-movies span.view-all,
-  .popular-articles span.view-all {
+  .discover-movies span.view-all--cancel,
+  .popular-articles span.view-all,
+  .popular-articles span.view-all--cancel {
     float: right;
     color: #F26767; }
     .discover-movies span.view-all i,
-    .popular-articles span.view-all i {
+    .discover-movies span.view-all--cancel i,
+    .popular-articles span.view-all i,
+    .popular-articles span.view-all--cancel i {
       position: relative;
       top: 1px;
       margin-left: 3px;
@@ -9229,6 +9282,10 @@ ion-slide {
       top: 1px;
       font-size: 16px;
       margin-right: 3px; }
+
+.discover-movies--fixed + .movie-list {
+  top: 50px;
+  position: relative; }
 
 .movie-recommended {
   width: 50%;
@@ -9261,10 +9318,10 @@ ion-slide {
   .movie-recommended .overlay {
     position: absolute;
     right: 0;
-    top: 0;
+    bottom: 0;
     z-index: 2;
     width: 100%;
-    height: 100%;
+    height: 50%;
     background: transparent;
     /* Old browsers */
     background: -moz-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
@@ -9332,6 +9389,21 @@ ion-slide {
       content: '\2713  ';
       font-size: 12px; }
 
+.popular-articles-popup {
+  position: absolute;
+  z-index: 999;
+  background: white;
+  padding: .5em 2em;
+  border-radius: 40px;
+  left: calc(50% - 75px);
+  top: 40px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); }
+  .popular-articles-popup i {
+    margin-right: 0.5em; }
+  .popular-articles-popup.ng-hide {
+    -webkit-animation: fadeIn 0.5s;
+    animation: fadeIn 0.5s; }
+
 .article-popular {
   width: 50%;
   height: 180px;
@@ -9343,7 +9415,7 @@ ion-slide {
   .article-popular .image-loader {
     position: absolute;
     top: 70px;
-    left: 45%; }
+    left: calc(50% - 14px); }
   .article-popular.ng-enter {
     -webkit-animation: fadeInUp 1s;
     animation: fadeInUp 1s; }
@@ -9357,10 +9429,10 @@ ion-slide {
   .article-popular .overlay {
     position: absolute;
     right: 0;
-    top: 0;
+    bottom: 0;
     z-index: 2;
     width: 100%;
-    height: 100%;
+    height: 50%;
     background: transparent;
     /* Old browsers */
     background: -moz-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
@@ -9388,7 +9460,7 @@ ion-slide {
   .article-popular h2 {
     position: absolute;
     color: white;
-    bottom: 30px;
+    bottom: 20px;
     z-index: 3;
     padding: 0 10px;
     font-size: 14px;
@@ -9398,6 +9470,17 @@ ion-slide {
     text-align: center;
     text-overflow: clip;
     white-space: initial; }
+  .article-popular.article--loading {
+    width: 50%;
+    position: relative; }
+    .article-popular.article--loading .loading {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(49deg, #eee, #ccc);
+      background-size: 400% 400%;
+      -webkit-animation: loading 0.65s ease infinite;
+      animation: loading 0.65s ease infinite; }
 
 .popup--follow .popup,
 .popup--error .popup {
@@ -9450,9 +9533,9 @@ ion-slide {
     overflow: scroll;
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.21); }
 
-.article-content {
+.article-content-container {
   background: #FFFFFF; }
-  .article-content .article-header {
+  .article-content-container .article-header {
     position: fixed;
     padding-top: 30px;
     padding-bottom: 10px;
@@ -9464,27 +9547,27 @@ ion-slide {
     background: white;
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.21);
     transition: top 0.3s ease; }
-    .article-content .article-header.scrolled {
+    .article-content-container .article-header.scrolled {
       top: -80px; }
-    .article-content .article-header .back-icon,
-    .article-content .article-header .share-icon {
+    .article-content-container .article-header .back-icon,
+    .article-content-container .article-header .share-icon {
       color: black;
       font-size: 25px;
       position: absolute;
       top: 30px; }
-    .article-content .article-header .back-icon {
+    .article-content-container .article-header .back-icon {
       left: 10px;
       padding: 0 10px; }
-    .article-content .article-header .share-icon {
+    .article-content-container .article-header .share-icon {
       right: 20px; }
-  .article-content .article-detail-container {
+  .article-content-container .article-detail-container {
     padding-top: 80px; }
-    .article-content .article-detail-container .image-container {
+    .article-content-container .article-detail-container .image-container {
       position: relative;
       background: #000; }
-      .article-content .article-detail-container .image-container img {
+      .article-content-container .article-detail-container .image-container img {
         width: 100%; }
-      .article-content .article-detail-container .image-container .overlay {
+      .article-content-container .article-detail-container .image-container .overlay {
         background: transparent;
         /* Old browsers */
         background: -moz-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
@@ -9505,7 +9588,7 @@ ion-slide {
         width: 100%;
         height: 100%;
         z-index: 2; }
-      .article-content .article-detail-container .image-container h2.article-title {
+      .article-content-container .article-detail-container .image-container h2.article-title {
         position: absolute;
         bottom: 20px;
         font-weight: bold;
@@ -9514,50 +9597,55 @@ ion-slide {
         margin: 0;
         color: white;
         z-index: 4; }
-    .article-content .article-detail-container .video-container h2.article-title {
+    .article-content-container .article-detail-container .video-container h2.article-title {
       font-weight: bold;
       font-size: 16px;
       padding: 0 20px;
       margin: 0;
       margin: 20px 0; }
-    .article-content .article-detail-container .article-details {
+    .article-content-container .article-detail-container .article-details {
       padding: 0 20px;
       display: block;
       margin-top: 20px;
       margin-bottom: 20px; }
-      .article-content .article-detail-container .article-details .source,
-      .article-content .article-detail-container .article-details .time,
-      .article-content .article-detail-container .article-details .likes {
+      .article-content-container .article-detail-container .article-details .source,
+      .article-content-container .article-detail-container .article-details .time,
+      .article-content-container .article-detail-container .article-details .likes {
         display: inline-block; }
-        .article-content .article-detail-container .article-details .source i,
-        .article-content .article-detail-container .article-details .time i,
-        .article-content .article-detail-container .article-details .likes i {
+        .article-content-container .article-detail-container .article-details .source i,
+        .article-content-container .article-detail-container .article-details .time i,
+        .article-content-container .article-detail-container .article-details .likes i {
           margin-right: 4px;
           font-size: 16px;
           opacity: 0.3;
           position: relative;
           top: 1px; }
-      .article-content .article-detail-container .article-details .source {
+      .article-content-container .article-detail-container .article-details .source {
         width: 40%; }
-      .article-content .article-detail-container .article-details .time {
+      .article-content-container .article-detail-container .article-details .time {
         width: 25%;
         text-align: center; }
-      .article-content .article-detail-container .article-details .likes {
+      .article-content-container .article-detail-container .article-details .likes {
         width: 25%;
         text-align: right; }
-    .article-content .article-detail-container .article-content {
+    .article-content-container .article-detail-container .article-content {
       padding: 0 20px; }
-    .article-content .article-detail-container .follow-container {
+      .article-content-container .article-detail-container .article-content h2 {
+        font-size: 1.25em; }
+      .article-content-container .article-detail-container .article-content img {
+        max-width: 100%;
+        width: 100%; }
+    .article-content-container .article-detail-container .follow-container {
       padding: 10px 20px; }
-      .article-content .article-detail-container .follow-container h2 {
+      .article-content-container .article-detail-container .follow-container h2 {
         width: 70%;
         display: inline-block;
         font-size: 14px;
-        line-height: 30px;
+        line-height: 1.5;
         font-weight: bold;
         text-transform: uppercase; }
-      .article-content .article-detail-container .follow-container a.followBtn,
-      .article-content .article-detail-container .follow-container a.following {
+      .article-content-container .article-detail-container .follow-container a.followBtn,
+      .article-content-container .article-detail-container .follow-container a.following {
         float: right;
         text-transform: uppercase;
         font-size: 11px;
@@ -9567,23 +9655,23 @@ ion-slide {
         color: #FFFFFF;
         padding: 5px 9px;
         transition: all 150ms ease-out; }
-      .article-content .article-detail-container .follow-container a.followBtn {
+      .article-content-container .article-detail-container .follow-container a.followBtn {
         background: #F7C069;
         max-width: 100px; }
-        .article-content .article-detail-container .follow-container a.followBtn:before {
+        .article-content-container .article-detail-container .follow-container a.followBtn:before {
           content: '+  ';
           font-size: 14px;
           top: -2px; }
-      .article-content .article-detail-container .follow-container a.following {
+      .article-content-container .article-detail-container .follow-container a.following {
         max-width: 130px;
         background: #81B45D; }
-        .article-content .article-detail-container .follow-container a.following:before {
+        .article-content-container .article-detail-container .follow-container a.following:before {
           content: '\2713  ';
           font-size: 12px; }
-    .article-content .article-detail-container .tags-container {
+    .article-content-container .article-detail-container .tags-container {
       margin-bottom: 20px;
       padding: 0 20px; }
-      .article-content .article-detail-container .tags-container .movie-tag {
+      .article-content-container .article-detail-container .tags-container .movie-tag {
         font-size: 12px;
         color: #F6B85E;
         border: 1px solid #F6B85E;
@@ -9594,7 +9682,7 @@ ion-slide {
         display: inline-block;
         transition: background 0.3s ease;
         transition: color 0.3s ease; }
-        .article-content .article-detail-container .tags-container .movie-tag.activated {
+        .article-content-container .article-detail-container .tags-container .movie-tag.activated {
           background: #F6B85E;
           color: #FFFFFF; }
 
@@ -9648,7 +9736,7 @@ ion-slide {
     .movie-content .movie-image .image-loader {
       position: absolute;
       top: 250px;
-      left: 50%; }
+      left: calc(50% - 14px); }
     .movie-content .movie-image .overlay {
       background: rgba(0, 0, 0, 0.7);
       /* Old browsers */
@@ -9827,7 +9915,7 @@ ion-slide {
       .trending-content .trend-container .image-container .image-loader {
         position: absolute;
         top: 74px;
-        left: 45%; }
+        left: calc(50% - 14px); }
     .trending-content .trend-container .horizontal-line {
       background: #FFFFFF;
       width: 2px;
@@ -9847,10 +9935,10 @@ ion-slide {
       z-index: 10; }
     .trending-content .trend-container .overlay {
       position: absolute;
-      top: 0;
+      bottom: 0;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 50%;
       z-index: 6;
       background: transparent;
       /* Old browsers */
@@ -9961,8 +10049,7 @@ ion-slide {
           height: 30px;
           width: 30px;
           border-radius: 50%;
-          z-index: 2;
-          background-color: #F49999; }
+          z-index: 2; }
         .trending-content .trend-container .tweet-container .circle-container .inner-circle {
           position: relative;
           left: 11px;
@@ -9976,31 +10063,38 @@ ion-slide {
         position: absolute;
         left: -50px;
         top: 17px;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: bold;
         background: #FFFFFF;
         border-radius: 3px;
         padding: 3px 3px;
         width: 35px;
-        text-align: center; }
+        text-align: center;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2); }
       .trending-content .trend-container .tweet-container .tweet-text {
         line-height: 20px;
         white-space: normal;
-        padding-bottom: 15px;
+        padding-bottom: 25px;
         font-size: 14px; }
       .trending-content .trend-container .tweet-container .tweet-retweet {
         position: absolute;
         right: 70px;
         bottom: 10px;
-        font-size: 12px; }
+        font-size: 14px;
+        font-weight: bold; }
         .trending-content .trend-container .tweet-container .tweet-retweet i {
-          font-size: 14px;
-          color: #66BD2B; }
+          font-size: 16px;
+          color: #66BD2B;
+          margin-right: 0.25em; }
       .trending-content .trend-container .tweet-container .tweet-favorite {
         position: absolute;
         right: 20px;
         bottom: 10px;
-        font-size: 12px; }
+        font-size: 14px;
+        font-weight: bold; }
         .trending-content .trend-container .tweet-container .tweet-favorite i {
-          font-size: 14px;
-          color: #F49999; }
+          font-size: 16px;
+          margin-right: 0.25em;
+          color: #F49999;
+          position: relative;
+          top: 1px; }

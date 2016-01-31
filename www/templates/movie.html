@@ -1,7 +1,7 @@
 <ion-view name="{{movie.name}}" class="movie-content">
   <div class="movie-header">
   		<i class="icon ion-ios-arrow-back back-icon" ng-click="goBack()"></i>
-	    <h4 class="movie-title">{{movie.name}}</h4>
+	    <h4 class="movie-title">{{:: name}}</h4>
 			<i class="icon ion-android-share-alt share-icon" ng-click="shareMovie(movie)"></i>
   	</div>
   <ion-content class="movie-detail-container" on-scroll="scrollHandler()">
@@ -44,16 +44,16 @@
 					<div ng-repeat="tag in tags track by tag.tag_name" ng-click="tagClick()" class="movie-tag"> {{ :: tag.tag_name }}</div>
 				</div>
 
-				<ion-list class="articles-list">
-					<ion-item class="movie-article item item-thumbnail-left" ng-repeat="article in articles track by $index" ui-sref="article({articleId : article.id})">
+				<ion-list class="articles-list" ng-if="articles.result == 404">
+					<ion-item class="movie-article item item-thumbnail-left" ng-repeat="article in articles track by $index" ui-sref="article({articleId : article.article_id})">
 
-						<img src="{{ :: article.image }}">
+						<img src="{{ article.hero_image.length < 1 ? 'http://img.youtube.com/vi/' + article.hero_video_url + '/0.jpg' : article.hero_image }} ">
 						<h3> {{ :: article.title }}</h3>
 
 						<span class="article-source"> {{ :: article.source }} </span>
 
 						<span class="article-time">
-							<i class="icon ion-android-time"></i> {{ :: article.time}}
+							<i class="icon ion-android-time"></i> {{ :: prettyDate(article.createdon)}}
 						</span>
 						
 					</ion-item>

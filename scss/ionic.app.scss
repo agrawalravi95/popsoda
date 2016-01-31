@@ -25,10 +25,6 @@ $profile:                         #F7B955 !default;
 $movieStrong:                     #F49999 !default;
 $tagColor:                        #F6B85E !default;
 
-//Trending Circle Colors
-
-$trendingColors: #F49999, #FECE89, #66C4BD;
-
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
@@ -78,6 +74,13 @@ html, body {
   animation: slideInUp 1s;
 }
 
+.end-of-list {
+  padding: 2rem;
+  padding-bottom: 5rem;
+  text-align: center;
+}
+
+
 
 
 // Animations
@@ -94,6 +97,62 @@ html, body {
     0%{background-position:0% 92%}
     50%{background-position:100% 9%}
     100%{background-position:0% 92%}
+}
+
+
+//Welcome Page
+
+.welcome-content {
+  // background: rgba(#514B54, 0.2);
+  background-image: url('../img/welcome_bg.png');
+  background-size: cover;
+  padding: 4rem;
+
+  &.ng-hide {
+    -webkit-animation: slideOutUp 1s;
+    animation: slideOutUp 1s;
+  }
+
+  img.welcome__logo {
+    position: relative;
+    display: block;
+    margin: 5rem auto;
+  }
+
+  a.facebook-sign-in {
+    border: 0;
+    padding: 1.25rem 1rem;
+    margin-top: 10rem;
+    display: block;
+    background: #547CD8;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+    border-radius: 5px;
+
+    i {
+      font-size: 24px;
+      position: absolute;
+      top: 18px;
+      padding-right: 1rem;
+      border-right: 1px solid rgba(white, 0.5)
+    }
+
+    span {
+      margin-left: 2.5rem;
+    }
+  }
+
+  .skip-login {
+    margin-top: 2rem;
+    font-size: 1rem;
+    color: white;
+    width: 100%;
+    text-align: center;
+  }
+
+
 }
 
 
@@ -228,6 +287,14 @@ ion-slide {
 .discover-movies,
 .popular-articles {
 
+  &.discover-movies--fixed {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+  }
+
   padding: 0 20px;
   height: 50px;
   background: #f7f7f7;
@@ -237,7 +304,8 @@ ion-slide {
     line-height: 50px;
   }
 
-  span.view-all {
+  span.view-all,
+  span.view-all--cancel {
     float: right;
     color: #F26767;
 
@@ -260,6 +328,11 @@ ion-slide {
       margin-right: 3px;
     }
   }
+}
+
+.discover-movies--fixed + .movie-list {
+  top: 50px;
+  position: relative;
 }
 
 .movie-recommended {
@@ -306,11 +379,11 @@ ion-slide {
   .overlay {
     position: absolute;
     right: 0;
-    top: 0;
+    bottom: 0;
     z-index: 2;
 
     width: 100%;
-    height: 100%;
+    height: 50%;
     @include linearGradient(transparent, rgba(0,0,0,0.6));
   }
 
@@ -385,6 +458,26 @@ ion-slide {
   }
 }
 
+.popular-articles-popup {
+    position: absolute;
+    z-index: 999;
+    background: white;
+    padding: .5em 2em;
+    border-radius: 40px;
+    left: calc(50% - 75px);
+    top: 40px;
+    box-shadow: 2px 2px 4px rgba(black, 0.2);
+
+    i {
+      margin-right: 0.5em;
+    }
+
+    &.ng-hide {
+      -webkit-animation: fadeIn 0.5s;
+      animation: fadeIn 0.5s;
+    }
+}
+
 .article-popular {
   
   width: 50%;
@@ -400,7 +493,7 @@ ion-slide {
   .image-loader {
     position: absolute;
     top: 70px;
-    left: 45%;
+    left: calc(50% - 14px);
   }
 
   &.ng-enter {
@@ -423,11 +516,11 @@ ion-slide {
   .overlay {
     position: absolute;
     right: 0;
-    top: 0;
+    bottom: 0;
     z-index: 2;
 
     width: 100%;
-    height: 100%;
+    height: 50%;
     @include linearGradient(transparent, rgba(0,0,0,0.6));
   }
 
@@ -446,7 +539,7 @@ ion-slide {
   h2 {
     position: absolute;
     color: white;
-    bottom: 30px;
+    bottom: 20px;
     z-index: 3;
     padding: 0 10px;
     font-size: 14px;
@@ -456,6 +549,22 @@ ion-slide {
     text-align: center;
     text-overflow: clip;
     white-space: initial;
+  }
+
+  &.article--loading {
+    width: 50%;
+    position: relative;
+
+    .loading {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+
+      background: linear-gradient(49deg, #eee, #ccc);
+      background-size: 400% 400%;
+
+      @include animation(loading 0.65s ease infinite);
+    }
   }
 }
 
@@ -538,7 +647,7 @@ ion-slide {
 
 
 // Article Detail Content 
-.article-content {
+.article-content-container {
   background: #FFFFFF;
 
   .article-header {
@@ -656,6 +765,15 @@ ion-slide {
 
     .article-content {
       padding: 0 20px;
+
+      h2 {
+        font-size: 1.25em;
+      }
+
+      img {
+        max-width: 100%;
+        width: 100%;
+      }
     }
 
     .follow-container {
@@ -667,7 +785,7 @@ ion-slide {
         width: 70%;
         display: inline-block;
         font-size: 14px;
-        line-height: 30px;
+        line-height: 1.5;
         font-weight: bold;
         text-transform: uppercase;
       }
@@ -805,7 +923,7 @@ ion-slide {
     .image-loader {
       position: absolute;
       top: 250px;
-      left: 50%;
+      left: calc(50% - 14px);
     }
 
     .overlay {
@@ -1069,7 +1187,7 @@ ion-slide {
       .image-loader {
         position: absolute;
         top: 74px;
-        left: 45%;
+        left: calc(50% - 14px);
       }
     }
 
@@ -1096,10 +1214,10 @@ ion-slide {
 
     .overlay {
       position: absolute;
-      top: 0;
+      bottom: 0;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 50%;
       z-index: 6;
       @include linearGradient(transparent, rgba(0,0,0,0.5));
     }
@@ -1229,7 +1347,6 @@ ion-slide {
           width: 30px;
           border-radius: 50%;
           z-index: 2;
-          background-color: $movieStrong;
         }
 
         .inner-circle {
@@ -1248,20 +1365,21 @@ ion-slide {
         position: absolute;
         left: -50px;
         top: 17px;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: bold;
         background: #FFFFFF;
         border-radius: 3px;
         padding: 3px 3px;
         width: 35px;
         text-align: center;
+        box-shadow: 1px 1px 1px rgba(black, 0.2);
 
       }
 
       .tweet-text {
         line-height: 20px;
         white-space: normal;
-        padding-bottom: 15px;
+        padding-bottom: 25px;
         font-size: 14px;
       }
 
@@ -1269,11 +1387,13 @@ ion-slide {
         position: absolute;
         right: 70px;
         bottom: 10px;
-        font-size: 12px;
+        font-size: 14px;
+        font-weight: bold;
 
         i {
-          font-size: 14px;
+          font-size: 16px;
           color: #66BD2B;
+          margin-right: 0.25em;
         }
       }
 
@@ -1281,11 +1401,15 @@ ion-slide {
         position: absolute;
         right: 20px;
         bottom: 10px;
-        font-size: 12px;
+        font-size: 14px;
+        font-weight: bold;
 
         i {
-          font-size: 14px;
+          font-size: 16px;
+          margin-right: 0.25em;
           color: $movieStrong;
+          position: relative;
+          top: 1px;
         }
       }
     }

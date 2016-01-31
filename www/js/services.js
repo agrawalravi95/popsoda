@@ -1,62 +1,11 @@
 angular.module('popsoda.services', [])
 
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
-
-  // Some fake testing data
+.factory('User', function() {
   
-  var chats = [];
+  var userID,
+      defaultID = "0X0X001239956XXA",
+      defaultUser = "popsodauser";
 
-  /*
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }]; */
-
-  return {
-
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
-    }
-
-  };
-})
-
-.service('User', function() {
-  // For the purpose of this example I will store user data on ionic local storage but you should save it on a database
   var setUser = function(user_data) {
     window.localStorage.starter_facebook_user = JSON.stringify(user_data);
   };
@@ -122,6 +71,7 @@ angular.module('popsoda.services', [])
     },
 
     getFeed: function(){
+
       return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/0/4")
       .then(function successCallback(response){
         movies = response.data;
@@ -137,9 +87,14 @@ angular.module('popsoda.services', [])
     },
 
     getMore: function(lastMovie) {
+
+      lastMovie = new Date(Date.parse(lastMovie) / 1000);
+      lastMovie -= (lastMovie.getTimezoneOffset() * 60);
+
       return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/" + lastMovie + "/10").then(function(response){
         var newMovies = response.data;
         movies = movies.concat(newMovies);
+        console.log(lastMovie);
         return newMovies;
       });
     },
@@ -199,6 +154,10 @@ angular.module('popsoda.services', [])
     },
 
     getMore: function(lastArticle) {
+
+      lastArticle = new Date(Date.parse(lastArticle) / 1000);
+      lastArticle -= (lastArticle.getTimezoneOffset() * 60);
+
       return $http.get("https://popsoda.mobi/api/index.php/home/toparticle/" + lastArticle + "/10").then(function(response){
         var newArticles = response.data;
         articles = articles.concat(newArticles);
@@ -215,13 +174,37 @@ angular.module('popsoda.services', [])
       function errorCallback () {
         console.error("Cannot fetch article detail at the moment");
       })
+    },
+
+    poll: function(articleTimestamp) {
+
+      articleTimestamp = new Date(Date.parse(articleTimestamp) / 1000);
+      articleTimestamp -= (articleTimestamp.getTimezoneOffset() * 60);
+      
+      return $http.get("https://popsoda.mobi/api/index.php/home/latesttoparticle/" + articleTimestamp)
+      .then(function successCallback (response) {
+        var latestArticles = response.data;
+        return latestArticles;
+      },
+      function errorCallback() {
+        console.error("Cannot fetch new articles at the moment");
+      })
+    },
+
+    unshift: function(articlesFromView) {
+      articles.unshift(articlesFromView);
     }
   }
 })
 
 .factory('Trends', function ($http) {
   
-  var trends = [];
+  var trends = [],
+      colors = ['#F49999', '#FECE89', '#66C4BD'];
+
+  var getRandomColor =  function() {
+    return colors[Math.floor(Math.random() * 3)];
+  };
 
   return {
 
@@ -240,22 +223,60 @@ angular.module('popsoda.services', [])
       return $http.get("https://popsoda.mobi/api/index.php/twitter/0/10")
       .then(function successCallback(response){
         trends = response.data;
+
+        for (var i = trends.length - 1; i >= 0; i--) {
+          trends[i].tweet1.color = getRandomColor();
+          trends[i].tweet2.color = getRandomColor();
+        };
+
         window.localStorage.removeItem('localTrends');
         window.localStorage.setItem('localTrends', JSON.stringify(trends));
+
         return trends;
       }, 
       function errorCallback() {
         trends = JSON.parse(window.localStorage.getItem('localTrends'));
+
+        for (var i = trends.length - 1; i >= 0; i--) {
+          trends[i].tweet1.color = getRandomColor();
+          trends[i].tweet2.color = getRandomColor();
+        };
+
         console.log("Fetched from local");
         return trends;
       });
     },
 
     getMore: function (lastTrend) {
+
+      lastTrend = Date.parse(lastTrend) / 1000;
+
       return $http.get("https://popsoda.mobi/api/index.php/twitter/" + lastTrend + "/10").then(function(response){
         var newTrends = response.data;
+
+        for (var i = newTrends.length - 1; i >= 0; i--) {
+          newTrends[i].tweet1.color = getRandomColor();
+          newTrends[i].tweet2.color = getRandomColor();
+        };
+
         trends = trends.concat(newTrends);
         return newTrends;
+      });
+    },
+
+    retweet: function (tweetID) {
+      return $http.post("https://api.twitter.com/1.1/statuses/retweet/" + tweetID +".json").then(function(response) {
+          console.log("Success retweet" + response.data);
+      }, function(response) {
+        console.log("Error: " + response.data);
+      });
+    },
+
+    favorite: function (tweetID) {
+      return $http.post("https://api.twitter.com/1.1/favorites/create.json?id=" + tweetID).then(function(response) {
+          console.log("Success favorite" + response.data);
+      }, function(response) {
+        console.log("Error: " + response.data);
       });
     }
 
