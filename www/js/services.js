@@ -4,7 +4,9 @@ angular.module('popsoda.services', [])
   
   var userID,
       defaultID = "0X0X001239956XXA",
-      defaultUser = "popsodauser";
+      defaultUser = "popsodauser",
+      userFbInfo,
+      userTwitterInfo;
 
   var setUser = function(user_data) {
     window.localStorage.starter_facebook_user = JSON.stringify(user_data);
@@ -14,9 +16,30 @@ angular.module('popsoda.services', [])
     return JSON.parse(window.localStorage.starter_facebook_user || '{}');
   };
 
+  var setUserFbInfo = function(info){
+    userFbInfo = info;
+    window.localStorage.userFbInfo = JSON.stringify(info);
+  };
+
+  var getUserFbInfo = function(info){
+    return JSON.parse(window.localStorage.userFbInfo || '{}');
+  };
+
+  var setUserTwitterInfo = function(info) {
+    userTwitterInfo = info;
+  }
+
+  var getUserTwitterInfo = function(info) {
+    return userTwitterInfo;
+  }
+
   return {
     getUser: getUser,
-    setUser: setUser
+    setUser: setUser,
+    setUserFbInfo: setUserFbInfo,
+    getUserFbInfo: getUserFbInfo,
+    setUserTwitterInfo: setUserTwitterInfo,
+    getUserTwitterInfo: getUserTwitterInfo
   };
 })
 
@@ -197,10 +220,27 @@ angular.module('popsoda.services', [])
   }
 })
 
-.factory('Trends', function ($http) {
+.factory('Trends', function($http) {
   
   var trends = [],
-      colors = ['#F49999', '#FECE89', '#66C4BD'];
+      colors = ['#F49999', '#FECE89', '#66C4BD'],
+      oauthToken,
+      oauthTokenSecret;
+
+  // var getConfig = function() {
+  //     return { headers: {
+
+  //       'Authorization' : 'OAuth',
+  //       'oauth_consumer_key' : '5FcFAFzcsyxzVLp99I55z61lO',
+  //       'oauth_nonce' : '' + [Math.random()*123456789], 
+  //       'oauth_signature' : 'v66gCAIOBG7kSqbDj3aJBeEcXnw%3D', 
+  //       'oauth_signature_method' : 'HMAC-SHA1',
+  //       'oauth_timestamp' : '' + Date().getTime()/1000,
+  //       'oauth_token' : oauthToken,
+  //       'oauth_token_secret' : oauthTokenSecret,
+  //       'oauth_version' : '1.0'
+  //     }}
+  // };
 
   var getRandomColor =  function() {
     return colors[Math.floor(Math.random() * 3)];
@@ -264,8 +304,16 @@ angular.module('popsoda.services', [])
       });
     },
 
+    setOauthToken: function(oauth) {
+      oauthToken = oauth;
+    },
+
+    setOauthTokenSecret: function(oauth) {
+      oauthTokenSecret = oauth;
+    },
+
     retweet: function (tweetID) {
-      return $http.post("https://api.twitter.com/1.1/statuses/retweet/" + tweetID +".json").then(function(response) {
+      return $http.post("https://api.twitter.com/1.1/statuses/retweet/" + tweetID +".json", getConfig()).then(function(response) {
           console.log("Success retweet" + response.data);
       }, function(response) {
         console.log("Error: " + response.data);
@@ -273,44 +321,121 @@ angular.module('popsoda.services', [])
     },
 
     favorite: function (tweetID) {
-      return $http.post("https://api.twitter.com/1.1/favorites/create.json?id=" + tweetID).then(function(response) {
+      return $http.post("https://api.twitter.com/1.1/favorites/create.json?id=" + tweetID, getConfig()).then(function(response) {
           console.log("Success favorite" + response.data);
       }, function(response) {
-        console.log("Error: " + response.data);
+        console.log(response.data);
       });
     }
 
   }
 })
 
+.factory('Trailers', function($http) {
+  var trailers = [];
+
+  var getTrailers = function() {
+    return $http.get("https://popsoda.mobi/api/index.php/trailerRelease").then(
+
+      function successCallback(response){
+
+        trailers = response.data;
+        window.localStorage.removeItem('localTrailers');
+        window.localStorage.setItem('localTrailers', JSON.stringify(trailers));
+
+        return trailers;
+
+      },
+      function errorCallback(response) {
+        trailers = JSON.parse(window.localStorage.getItem('localTrailers')); 
+        console.log("Fetched from local");
+        return trailers;
+    });
+  };
+
+  return {
+    getTrailers : getTrailers
+  }
+})
+
 .factory('Searches', function($q, $timeout, $http) {
 
-  var searches = [{"fs":"LCI","iata":"LF","icao":"LCI","name":"Lao Central Airlines ","active":true},{"fs":"TGU","iata":"5U","icao":"TGU","name":"TAG","active":true},{"fs":"BT","iata":"BT","icao":"BTI","name":"Air Baltic","active":true},{"fs":"9J","iata":"9J","icao":"DAN","name":"Dana Airlines","active":true},{"fs":"2O","iata":"2O","icao":"RNE","name":"Island Air Service","active":true},{"fs":"NPT","icao":"NPT","name":"Atlantic Airlines","active":true},{"fs":"C8","iata":"C8","icao":"ICV","name":"Cargolux Italia","active":true},{"fs":"FK","iata":"FK","icao":"WTA","name":"Africa West","active":true},{"fs":"8K","iata":"8K","icao":"EVS","name":"EVAS Air Charters","active":true},{"fs":"W8","iata":"W8","icao":"CJT","name":"Cargojet","active":true},{"fs":"JBW","iata":"3J","icao":"JBW","name":"Jubba Airways (Kenya)","active":true},{"fs":"TNU","iata":"M8","icao":"TNU","name":"TransNusa","active":true},{"fs":"HCC","iata":"HC","icao":"HCC","name":"Holidays Czech Airlines","active":true},{"fs":"APJ","iata":"MM","icao":"APJ","name":"Peach Aviation","active":true},{"fs":"TUY","iata":"L4","icao":"TUY","name":"LTA","active":true},{"fs":"LAE","iata":"L7","icao":"LAE","name":"LANCO","active":true},{"fs":"L5*","iata":"L5","icao":"LTR","name":"Lufttransport","active":true},{"fs":"QA","iata":"QA","icao":"CIM","name":"Cimber","active":true},{"fs":"KBZ","iata":"K7","icao":"KBZ","name":"Air KBZ","active":true},{"fs":"L2","iata":"L2","icao":"LYC","name":"Lynden Air Cargo","active":true},{"fs":"MPK","iata":"I6","icao":"MPK","name":"Air Indus","active":true},{"fs":"CAO","icao":"CAO","name":"Air China Cargo ","active":true},{"fs":"BEK","iata":"Z9","icao":"BEK","name":"Bek Air","active":true},{"fs":"IAE","iata":"IO","icao":"IAE","name":"IrAero","active":true},{"fs":"GL*","iata":"GL","name":"Airglow Aviation Services","active":true},{"fs":"ATN","iata":"8C","icao":"ATN","name":"ATI","active":true},{"fs":"GU","iata":"GU","icao":"GUG","name":"Aviateca Guatemala","active":true},{"fs":"GHY","icao":"GHY","name":"German Sky Airlines ","active":true},{"fs":"SS","iata":"SS","icao":"CRL","name":"Corsair","active":true},{"fs":"XK","iata":"XK","icao":"CCM","name":"Air Corsica","active":true},{"fs":"W9*","iata":"W9","icao":"JAB","name":"Air Bagan","active":true},{"fs":"Z8*","iata":"Z8","icao":"AZN","name":"Amaszonas","active":true},{"fs":"D2","iata":"D2","icao":"SSF","name":"Severstal Aircompany","active":true},{"fs":"SNC","iata":"2Q","icao":"SNC","name":"Air Cargo Carriers","active":true},{"fs":"PST","iata":"7P","icao":"PST","name":"Air Panama","active":true},{"fs":"VV","iata":"VV","icao":"AEW","name":"Aerosvit Airlines","active":true},{"fs":"UJ","iata":"UJ","icao":"LMU","name":"AlMasria","active":true},{"fs":"9U","iata":"9U","icao":"MLD","name":"Air Moldova","active":true},{"fs":"NF","iata":"NF","icao":"AVN","name":"Air Vanuatu","phoneNumber":"678 238 48","active":true},{"fs":"NJS","iata":"NC","icao":"NJS","name":"Cobham Aviation","active":true}],
-      recentSearches = [];
+  var searches = [], matches, searchResult, genreResult;
 
     var searchTags = function(searchFilter) {
-         
-        console.log('Searching tags for ' + searchFilter);
-
+        
+        matches = [];
         var deferred = $q.defer();
 
-        var matches = searches.filter( function(search) {
-          if(search.name.toLowerCase().indexOf(searchFilter.toLowerCase()) !== -1 ) return true;
-        })
+        $http.get("https://popsoda.mobi/api/index.php/typeahead/" + searchFilter).then(function(response) {
 
-        $timeout( function(){
-        
-           deferred.resolve( matches );
+          if(response.data.tag[0].hasOwnProperty("result") && response.data.tag[0].result == "404"){
+            return deferred.promise;
+          }
 
-        }, 100);
+          searches = response.data.tag;
+
+          matches = searches.filter( function(search) {
+            if(search.tag_name.toLowerCase().indexOf(searchFilter.toLowerCase()) !== -1 ) return true;
+            else {
+              return deferred.promise;
+            }
+          })
+
+          deferred.resolve( matches );
+
+        }, function(response) {
+          return deferred.promise;
+        });
 
         return deferred.promise;
 
     };
 
+    var getMatches = function() {
+      return matches;
+    }
+
+    var getSearchResult = function(tagID) {
+      return $http.get("https://popsoda.mobi/api/index.php/searchbytag/"+tagID).then(function successCallback(response) {
+
+        searchResult = response.data;
+        return searchResult;
+
+      });
+    };
+
+    var searchByGenre = function(genres) {
+
+
+      var str = 'https://popsoda.mobi/api/index.php/searchmoviebygenre/';
+
+      for (var i = genres.length - 1; i >= 1; i--) {
+        str = str + genres[i] + '/';
+        console.log(str);
+      };
+
+      str = str + genres[i];
+
+      console.log(str);
+
+      return $http.get(str).then(function successCallback(response) {
+
+        genreResult = response.data.movie;
+        return genreResult;
+
+      }, function errorCallback(response) {
+        genreResult = [{'result' : '404'}];
+        return genreResult;
+      });
+    }
+
   return {
 
     searchTags : searchTags,
+    getMatches : getMatches,
+    getSearchResult: getSearchResult,
+    searchByGenre: searchByGenre,
 
     sort: function (a, b) {
       var searchA = a.name.toLowerCase();

@@ -1,5 +1,5 @@
 <ion-view view-title="Trending" class="trending-content">
-  <ion-content>
+  <ion-content lazy-scroll>
 
     <ion-list class="trends-list">
       <ion-item class="trend-container" ng-repeat="trend in trends track by trend.movie_id" ng-if="trend.tweet1.tweet_text.length > 0 && trend.tweet2.tweet_text.length > 0">
@@ -7,7 +7,7 @@
           
           <div class="overlay"></div>
           <h2 class="trend-movie-title">{{ :: trend.movie_name | limitTo: 30}}<span>{{trend.movie_name.length > 30 ? '...' : ''}}</span></h2>
-          <img ng-src="{{ :: trend.image}}" class="trend-movie-img">
+          <img image-lazy-src="{{ :: trend.image}}" class="trend-movie-img" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent">
         </div>
 
         <div class="movie-detail">

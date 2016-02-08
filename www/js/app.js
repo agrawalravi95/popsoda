@@ -1,5 +1,5 @@
 
-angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-alt', 'ngCordova', 'ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
+angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-alt', 'ngCordova', 'ngCordovaOauth','ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
 
 .run(function($ionicPlatform, $ionicPopup) {
   $ionicPlatform.ready(function() {

@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "ionic-image-lazy-load": "ion-image-lazy-load#*",
-    "angucomplete-alt": "~2.1.0"
+    "angucomplete-alt": "~2.1.0",
+    "ng-cordova-oauth": "~0.2.2"
   }
 }

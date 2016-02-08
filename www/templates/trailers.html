@@ -1,47 +1,63 @@
-<ion-view view-title="Trailers">
-  <ion-content>
-    <ion-list>
-			<div class="divider">
-				Hey There
+<ion-view view-title="Trailers" class="trailers-content">
+  
+  <div class="horizontal-line"></div>
+
+  <ion-content lazy-scroll>
+    <ion-list class="trailers-list">
+		<div class="divider">
+			<div class="circle-container">
+				<div class="outer-circle outer-circle--red">
+					<div class="inner-circle"></div>
+				</div>
 			</div>
-			<ion-item>
-				asdasdas
-			</ion-item>
-			<ion-item>
-				asdasdas
-			</ion-item>
+			Weekend Releases
+		</div>
+		<ion-item class="trailer-block" ng-repeat="weekendTrailer in weekendTrailers track by $index">
 
-			<ion-item>
-				asdasdas
-			</ion-item>
-			<ion-item>
-				asdasdas
-			</ion-item>
-			<ion-item>
-				asdasdas
-			</ion-item>
-
-			<div class="divider">
-				Hey There
+			<div class="img-container" ui-sref="article({articleId: weekendTrailer.article_id})">
+				<div class="overlay"></div>
+				<img image-lazy-src="{{ 'http://img.youtube.com/vi/' + weekendTrailer.hero_video_url + '/0.jpg' }}" class="trailer-img" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent"/>
+				<h2>{{weekendTrailer.movie_name | limitTo: 27}}<span>{{ weekendTrailer.movie_name.length > 27 ? '...' : ' ' }} </span></h2>
 			</div>
-			
-			<ion-item>
-				asdasdas
-			</ion-item>
-			<ion-item>
-				asdasdas
-			</ion-item>
+		</ion-item>
 
-			<ion-item>
-				asdasdas
-			</ion-item>
-			<ion-item>
-				asdasdas
-			</ion-item>
-			<ion-item>
-				asdasdas
-			</ion-item>
-			
+		<div class="divider">
+			<div class="circle-container">
+				<div class="outer-circle outer-circle--yellow">
+					<div class="inner-circle"></div>
+				</div>
+			</div>
+			This Month
+		</div>
+
+		<ion-item class="trailer-block" ng-repeat="thisMonthTrailer in thisMonthTrailers track by $index">
+
+			<div class="img-container" ui-sref="article({articleId: thisMonthTrailer.article_id})">
+				<div class="overlay"></div>
+				<img image-lazy-src="{{ 'http://img.youtube.com/vi/' + thisMonthTrailer.hero_video_url + '/0.jpg' }}" class="trailer-img" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent"/>
+				<h2>{{thisMonthTrailer.movie_name | limitTo: 27}}<span>{{ thisMonthTrailer.movie_name.length > 27 ? '...' : ' ' }} </span></h2>
+			</div>
+		</ion-item>
+
+		<div class="divider">
+			<div class="circle-container">
+				<div class="outer-circle outer-circle--teal">
+					<div class="inner-circle"></div>
+				</div>
+			</div>
+			Next Month
+		</div>
+
+		<ion-item class="trailer-block" ng-repeat="nextMonthTrailer in nextMonthTrailers track by $index">
+
+			<div class="img-container" ui-sref="article({articleId: nextMonthTrailer.article_id})">
+				<div class="overlay"></div>
+				<img image-lazy-src="{{ 'http://img.youtube.com/vi/' + nextMonthTrailer.hero_video_url + '/0.jpg' }}" class="trailer-img" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent"/>
+				<h2>{{nextMonthTrailer.movie_name | limitTo: 27}}<span>{{ thisMonthTrailer.movie_name.length > 27 ? '...' : ' ' }} </span></h2>
+			</div>
+		</ion-item>
+
+
     </ion-list>
   </ion-content>
 </ion-view>

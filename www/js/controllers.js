@@ -54,7 +54,7 @@ angular.module('popsoda.controllers', [])
       $scope.loggedIn = true;
       $scope.$parent.loggedIn = true;
 
-      $state.go('app.tabs');
+      $state.go('app.tab');
   }
 
   //Handle Facebook Signin Click
@@ -341,10 +341,17 @@ angular.module('popsoda.controllers', [])
 // Trending Pages Controller //
 ///////////////////////////////
 
-.controller('TrendingCtrl', function($scope, Trends, $ionicSlideBoxDelegate) {
+.controller('TrendingCtrl', function($scope, Trends, User, $cordovaOauth) {
 
   var lastTrend,
-      trendLoadAble = false;
+      trendLoadAble = false,
+      twitterLoggedIn = false;
+
+  (function() {
+    if(User.getUserTwitterInfo) twitterLoggedIn = false;
+    else twitterLoggedIn = true;
+  })();
+
 
   $scope.prettyDate = function(time){
     var date = new Date((time || "").replace(/-/g,"/").replace(/[TZ]/g," ")),
@@ -419,14 +426,42 @@ angular.module('popsoda.controllers', [])
 
   //Handle Retweet Click
   $scope.retweetHandler = function(tweetID) {
+
+    console.log(twitterLoggedIn);
+
+    if(twitterLoggedIn == false) {
+      twitterLogIn();
+    }
+
     Trends.retweet(tweetID);
     console.log("Here retweet");
   }
 
   //Handle Retweet Click
   $scope.favoriteHandler = function(tweetID) {
+    
+    console.log(twitterLoggedIn);
+
+    if(twitterLoggedIn == false) {
+      console.log("Calling Log In");
+      twitterLogIn();
+    }
+
     Trends.favorite(tweetID);
     console.log("Here favorite");
+  }
+
+  var twitterLogIn = function() {
+      console.log("In Log In");
+
+    $cordovaOauth.twitter("5FcFAFzcsyxzVLp99I55z61lO", "QFgsq0PUsgoci8JCFlSNpU2fkUaNCnQBzFKYABSaOHpMLvDrey").then(function(response) {
+      User.setUserTwitterInfo(response);
+      twitterLoggedIn = true;
+    },
+    function(response) {
+      console.log("Error= " + response);
+    });
+    
   }
 
   $scope.followers = [{'image':'http://placehold.it/40x40'}];
@@ -437,11 +472,14 @@ angular.module('popsoda.controllers', [])
 // Trailer Controller //
 ////////////////////////
 
-.controller('TrailersCtrl', function($scope, $ionicTabsDelegate, $ionicSlideBoxDelegate) {
+.controller('TrailersCtrl', function($scope, Trailers) {
 
-  $scope.settings = {
-    enableFriends: true
-  };
+  Trailers.getTrailers().then(function(trailers) {
+    $scope.weekendTrailers = trailers.weekend;
+    $scope.thisMonthTrailers = trailers.month;
+    $scope.nextMonthTrailers = trailers.nextMonth;
+  });
+
 })
 
 ///////////////////////
@@ -449,29 +487,155 @@ angular.module('popsoda.controllers', [])
 ///////////////////////
 
 
-.controller('SearchCtrl', function($scope, Searches) {
+.controller('SearchCtrl', function($scope, $timeout, Searches) {
   
-  $scope.data = { "tags" : [], "search" : '' };
+  var selectedGenres = [];
 
-  $scope.searchResultClick = true;
+  $scope.data = {
+    "tags" : [],
+    "search" : '',
+    "genres" : [
+    {'tag_name' : 'Animation', 'tag_id' : '27', 'selected' : false},
+    {'tag_name' : 'Adventure', 'tag_id' : '20', 'selected' : false},
+    {'tag_name' : 'Comedy', 'tag_id' : '53', 'selected' : false},
+    {'tag_name' : 'Drama', 'tag_id' : '11', 'selected' : false},
+    {'tag_name' : 'Action', 'tag_id' : '12', 'selected' : false},
+    {'tag_name' : 'Sci-Fi', 'tag_id' : '15', 'selected' : false},
+    {'tag_name' : 'Horror', 'tag_id' : '39', 'selected' : false},
+    {'tag_name' : 'Romance', 'tag_id' : '13', 'selected' : false},
+    {'tag_name' : 'Thriller', 'tag_id' : '28', 'selected' : false},
+    {'tag_name' : 'Biography', 'tag_id' : '52', 'selected' : false},
+    {'tag_name' : 'Crime', 'tag_id' : '99', 'selected' : false},
+    {'tag_name' : 'Mystery', 'tag_id' : '186', 'selected' : false},
+    {'tag_name' : 'War', 'tag_id' : '61', 'selected' : false},
+    {'tag_name' : 'Fantasy', 'tag_id' : '89', 'selected' : false}],
+  };
+
+  // Searches.getGenres().then(function(genres) {
+  //   $scope.data.genres = genres;
+  // });
+
+  $scope.searchResultClick = true,
+  $scope.showGenresToggle = false,
+  $scope.selectedGenresExist = false,
+  $scope.searchResultToggle = false;
+  $scope.showMovieError = false;
 
   $scope.search = function() {
     $scope.searchResultClick = true;
     Searches.searchTags($scope.data.search).then(
       function(matches) {
-        $scope.data.tags = matches;
+        console.log("matches");
+        $timeout(function() {
+          if(matches[0].hasOwnProperty('result') && matches[0].result == 404) {
+            $scope.data.tags = [];
+          }
+          else
+          $scope.data.tags = matches;
+        }, 100);
       }
     )
   }
 
-  $scope.cancelSearch = function  (argument) {
+  $scope.cancelSearch = function() {
+    $scope.searchResultClick = true;
+    $scope.searchResultToggle = false;
     $scope.data.search = null;
   }
 
-  $scope.searchResultClicked = function (tag) {
+  $scope.searchResultClicked = function(tag) {
     $scope.searchResultClick = false;
-    $scope.data.search = tag.name; 
+    $scope.searchResultToggle = true;
+    $scope.searchResultMoviesToggle = true;
+    $scope.searchResultArticlesToggle = true;
+    $scope.data.search = tag.tag_name;
+
+    Searches.getSearchResult(tag.tag_id).then(function(result) {
+      
+      if(result.movie.hasOwnProperty('result') && result.movie.result == "404") {
+        $scope.searchResultMoviesToggle = false;
+      }
+
+      if(result.movie.hasOwnProperty('result') && result.movie.result == "404") {
+        $scope.searchResultArticlesToggle = false;
+      }
+
+      $scope.movies = result.movie;
+      $scope.articles = result.article;  
+    });
   }
+
+  $scope.showGenres = function() {
+    $scope.showGenresToggle = true;
+  }
+
+  $scope.hideGenres = function() {
+    $scope.showGenresToggle = false;
+    selectedGenres = [];
+    $scope.selectedGenresExist = false;
+    for (var i = $scope.data.genres.length - 1; i >= 0; i--) {
+      $scope.data.genres[i].selected = false;
+    };
+  }
+
+  $scope.selectGenreToggle = function(index) {
+
+    $scope.searchResultToggle = true;
+    $scope.searchResultArticlesToggle = false;
+    $scope.showMovieError = false;
+
+    if(index == -1) return;
+
+    if($scope.data.genres[index].selected == false) {
+      $scope.data.genres[index].selected = true;
+      $scope.selectedGenresExist = true;
+      selectedGenres.push($scope.data.genres[index].tag_id);
+    }
+    else {
+      $scope.data.genres[index].selected = false;
+      selectedGenres.splice(selectedGenres.indexOf($scope.data.genres[index].tag_id), 1);
+      if(selectedGenres.length == 0) {
+        $scope.selectedGenresExist = false;
+        $scope.searchResultMoviesToggle = false;
+        return;}
+    }
+
+    Searches.searchByGenre(selectedGenres).then(function(movies) {
+        
+        if(movies[0].hasOwnProperty('result') && movies[0].result == "404") {
+          console.log("Here");
+          $scope.searchResultMoviesToggle = false;
+          $scope.showMovieError = true;
+          return;
+        }
+
+        $scope.searchResultMoviesToggle = true;
+        $scope.movies = movies;
+    });
+  }
+
+  // $scope.recommendedArticles = [{'article_id': '123',
+  //                     'hero_image': 'http://placehold.it/360x180',
+  //                     'title': 'Hello There!',
+  //                     },
+  //                     {'article_id': '121',
+  //                     'hero_image': 'http://placehold.it/360x180',
+  //                     'title': 'Hello There!',
+  //                     },
+  //                     {'article_id': '122',
+  //                     'hero_image': 'http://placehold.it/360x180',
+  //                     'title': 'Hello There!',
+  //                     },
+  //                     {'article_id': '124',
+  //                     'hero_image': 'http://placehold.it/360x180',
+  //                     'title': 'Hello There!',
+  //                     },
+  //                     {'article_id': '125',
+  //                     'hero_image': 'http://placehold.it/360x180',
+  //                     'title': 'Hello There!',
+  //                     }
+  //                     ];
+
 })
 
 ////////////////////////

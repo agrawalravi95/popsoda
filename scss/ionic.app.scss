@@ -151,8 +151,6 @@ html, body {
     width: 100%;
     text-align: center;
   }
-
-
 }
 
 
@@ -284,8 +282,7 @@ ion-slide {
   display: block;
 }
 
-.discover-movies,
-.popular-articles {
+.discover-movies {
 
   &.discover-movies--fixed {
     position: fixed;
@@ -293,15 +290,6 @@ ion-slide {
     top: 0;
     left: 0;
     z-index: 999;
-  }
-
-  padding: 0 20px;
-  height: 50px;
-  background: #f7f7f7;
-
-  span {
-    font-size: 14px;
-    line-height: 50px;
   }
 
   span.view-all,
@@ -316,6 +304,26 @@ ion-slide {
       font-size: 16px;
     }
   }
+}
+
+.discover-movies,
+.popular-articles,
+.popsoda-recommended,
+.related-movies,
+.related-articles {
+
+  
+
+  padding: 0 20px;
+  height: 50px;
+  background: #f7f7f7;
+
+  span {
+    font-size: 14px;
+    line-height: 50px;
+  }
+
+  
 
   span.time {
     float: right;
@@ -478,7 +486,8 @@ ion-slide {
     }
 }
 
-.article-popular {
+.article-popular,
+.article-block {
   
   width: 50%;
   height: 180px;
@@ -606,18 +615,28 @@ ion-slide {
     margin-top: 1px;
     position: relative;
 
+    &.ng-hide-add {
+      animation: fadeOutUp 0.2s;
+      -webkit-animation: fadeOutUp 0.2s;
+    }
+
+    &.ng-hide-remove {
+      animation: fadeInDown 0.2s;
+      -webkit-animation: fadeInDown 0.2s;
+    }
+
     i.search-icon {
       position: absolute;
       font-size: 20px;
       left: 20px;
-      top: 10px;
+      top: 20px;
     }
 
     i.cancel-icon {
       position: absolute;
       font-size: 20px;
       right: 20px;
-      top: 10px;
+      top: 20px;
       opacity: 0.5;
     }
 
@@ -626,7 +645,8 @@ ion-slide {
       font-size: 14px;
       display: block;
       width: 100%;
-      background: #f7f7f7;
+      height: 60px;
+      background: #f4f4f4;
 
       &:focus {
         background: #ffffff;
@@ -637,11 +657,163 @@ ion-slide {
 
   .search-result {
     position: absolute;
-    top: 40px;
+    top: 60px;
     width: 100%;
     max-height: 250px;
     overflow: scroll;
     box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.21);
+    z-index: 999;
+  }
+
+  .search-friends {
+    padding: 1.5rem 1.25rem; 
+    box-shadow: 2px -2px 2px rgba(black, 0.1);
+    background: white;
+    position: relative;
+
+    &.ng-hide-add {
+      animation: fadeOutUp 0.2s;
+      -webkit-animation: fadeOutUp 0.2s;
+    }
+
+    &.ng-hide-remove {
+      animation: fadeInDown 0.2s;
+      -webkit-animation: fadeInDown 0.2s;
+    }
+
+    span {
+      color: #F26767;
+    }
+
+    .followers-container {
+      display: inline;
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      padding-right: 1rem;
+
+      img {
+        position: relative;
+        border-radius: 50%;
+        border: 1px solid white;
+
+        &:nth-child(1) {
+          margin-right: -.75rem;
+        }
+
+        &:nth-child(2) {
+          margin-right: -.5rem;
+        }
+      }
+
+      i {
+        color: #F26767;
+        position: absolute;
+        top: 10px;
+        right: 0px;
+      }
+    }
+  }
+
+  .search-genre {
+    background: #636363;
+    padding: 1rem 1.5rem;
+    padding-bottom: 2rem;
+    position: relative;
+    height: 220px;
+    transition: height 300ms ease-in-out;
+
+    &.search-genre--minimized {
+      height: 180px;
+      overflow-y: hidden;
+    }
+
+    .overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: #636363;
+      opacity: 0.9;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    i {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      font-size: 24px;
+      color: white;
+      opacity: 0.5;
+    }
+
+    span.title {
+      position: absolute;
+      top: 4.5rem;
+      left: calc(50% - 80px);
+      font-weight: bold;
+      color: white;
+      background: $tagColor;
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      z-index: 2;
+    }
+
+    span.genre-tag {
+      font-size: 12px;
+      color: white;
+      border: 1px solid white;
+      border-radius: 15px;
+      padding: 3px 15px;
+      margin-right: 10px;
+      margin-top: 15px;
+      display: inline-block;
+      vertical-align: top;
+      transition: all 0.3s ease;
+
+      &.activated {
+        background: $tagColor;
+        color: #FFFFFF;
+      }
+
+      &.genre-tag--selected {
+        background: $tagColor;
+        color: white;
+        border-color: $tagColor;
+      }
+    }        
+  }
+
+  .search-genre--notags {
+    color: #888;
+    margin-top: 1rem;
+    text-align: center;
+  }
+  
+  .movie-list--article-hidden {
+    .movie-recommended:last-child {
+      margin-bottom: 3rem;      
+    }
+  }
+
+  .search-articles,
+  .search-result-container {
+    .article-block:last-child {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .search-articles {
+    &.ng-hide-add {
+      animation: fadeOutDown 0.2s;
+      -webkit-animation: fadeOutDown 0.2s;
+    }
+
+    &.ng-hide-remove {
+      animation: fadeInUp 0.2s;
+      -webkit-animation: fadeInUp 0.2s;
+    }
   }
 }
 
@@ -718,6 +890,8 @@ ion-slide {
     }
 
     .video-container {
+
+      min-height: 250px;
 
       h2.article-title {
         font-weight: bold;
@@ -1136,7 +1310,6 @@ ion-slide {
 }
 
 
-
 // Trending Section
 .trending-content {
 
@@ -1410,6 +1583,119 @@ ion-slide {
           color: $movieStrong;
           position: relative;
           top: 1px;
+        }
+      }
+    }
+  }
+}
+
+
+//Trailers Section
+.trailers-content {
+
+  background: #F5F6F8;
+  padding-bottom: 5rem;
+  
+  .horizontal-line {
+    background: #FFFFFF;
+    width: 2px;
+    height: 100%;
+    position: absolute;
+    left: 20px;
+    top: 0;
+  }
+  
+  .circle-container {
+    position: absolute;
+    left: -42px;
+    top: 5px;
+    z-index: 1;
+
+    .outer-circle {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      z-index: 2;
+
+      &.outer-circle--red {
+        background: #F69897;
+      }
+
+      &.outer-circle--yellow {
+        background: #FECE89;
+      }
+
+      &.outer-circle--teal {
+        background: #66C4BD;
+      }
+    }
+
+    .inner-circle {
+      position: relative;
+      left: 11px;
+      top: 11px;
+      height: 8px;
+      width: 8px;
+      border-radius: 50%;
+      z-index: 3;
+      background-color: white;
+    }
+  }
+
+  .trailers-list {
+
+    .list {
+      padding-bottom: 3rem;
+    }
+
+    .divider {
+      padding: 0.5rem 1rem;
+      background: white;
+      display: inline-block;
+      margin-left: 3rem;
+      margin-top: .5rem;
+      margin-bottom: .5rem;
+      border-radius: 3px;
+      box-shadow: 1px 1px 1px rgba(black, 0.1);
+      position: relative;
+    }
+
+    .trailer-block {
+      padding: 0;
+      border: 0;
+      margin: 0.75rem auto;
+
+      .img-container {
+        width: 100%;
+        height: 200px;
+        position: relative;
+
+        .overlay {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 25%;
+          z-index: 6;
+          @include linearGradient(transparent, rgba(0,0,0,0.8));
+        }
+
+        img {
+          width: 100%;
+          position: relative;
+          top: -35px;
+          clip-path: polygon(0px 35px, 360px 35px, 360px 235px, 0px 235px);
+          -webkit-clip-path: polygon(0px 35px, 360px 35px, 360px 235px, 0px 235px);
+        }
+
+        h2 {
+          font-weight: bold;
+          text-transform: uppercase;
+          color: white;
+          position: absolute;
+          bottom: 20px;
+          left: 20px;
+          z-index: 10;
         }
       }
     }

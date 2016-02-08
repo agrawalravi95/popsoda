@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"> -->
+    <title>Popsoda!</title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -22,8 +23,12 @@
     <script src="js/services.js"></script>
     <script src="js/tabSlide.js"></script>
     <script src="js/ionic-image-lazy-load.js"></script>
+
+    <!-- Other Scripts -->
     <script src="lib/angucomplete-alt/dist/angucomplete-alt.min.js"></script>
     <script src="lib/cordova-facebook-connect-plugin/lib/cordova-facebook-connect-plugin.js"></script>
+    <script src="js/sha1.js"></script>
+    <script src="lib/ng-cordova-oauth/dist/ng-cordova-oauth.js"></script>
     <script src="lib/ionic-native-transitions/dist/ionic-native-transitions.js"></script>
   </head>
   <body ng-app="popsoda">
