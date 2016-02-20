@@ -26,12 +26,14 @@
 
 			<div class="time">
 				<i class="icon ion-android-time"></i>
-				2d
+				{{ :: prettyDate(date)}}
 			</div>
 
 			<div class="likes">
-				<i class="icon ion-ios-heart-outline"></i>
-				{{ :: likes }}
+				<span ng-click="likeArticle()">
+					<i class="icon ion-ios-heart-outline" ng-class="{'ion-ios-heart' : userLike == 1}"></i>
+					{{ :: likes }}
+				</span>
 			</div>
 		</div>
 	
@@ -45,7 +47,7 @@
     </div>
 
 		<div class="tags-container">
-			<div ng-repeat="tag in tags track by tag.tag_name" ng-click="tagClick()" class="movie-tag"> {{ :: tag.tag_name }}</div>
+			<div ng-repeat="tag in tags track by tag.tag_name" ui-sref="tab({slideNo:3, searchTag: tag})" class="movie-tag"> {{ :: tag.tag_name }}</div>
 		</div>
 
   </ion-content>

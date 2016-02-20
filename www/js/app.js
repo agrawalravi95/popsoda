@@ -1,7 +1,7 @@
 
 angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-alt', 'ngCordova', 'ngCordovaOauth','ionicLazyLoad','popsoda.controllers', 'popsoda.services'])
 
-.run(function($ionicPlatform, $ionicPopup) {
+.run(function($ionicPlatform, $rootScope) {
   $ionicPlatform.ready(function() {
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -13,39 +13,23 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
-    // Back button handler
-
-    /* $ionicPlatform.registerBackButtonAction(function(event) {
-      if (true) { // your check here
-        console.log($state.current.name);
-        $ionicPopup.confirm({
-          template: 'Are you sure you want to exit?',
-          cssClass: 'popup--exit'
-        }).then(function(res) {
-          if (res) {
-            ionic.Platform.exitApp();
-          }
-        })
-      }
-    }, 100);
-
+    
     // Connection Test
     
-    if(window.Connection) {
-      if(navigator.connection.type == Connection.NONE) {
-          alert('There is no internet connection available');
-      }else{
-          alert(navigator.connection.type);
-      }
-    }else{
-          alert('Cannot find Window.Connection');
-    } */
+    // if(window.Connection) {
+    //   if(navigator.connection.type == Connection.NONE) {
+    //       alert('There is no internet connection available');
+    //   }else{
+    //       alert(navigator.connection.type);
+    //   }
+    // }else{
+    //       alert('Cannot find Window.Connection');
+    // }
 
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $ionicNativeTransitionsProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $ionicNativeTransitionsProvider, $httpProvider) {
 
   $ionicConfigProvider.views.maxCache(5);
   $ionicConfigProvider.scrolling.jsScrolling(false);
@@ -59,9 +43,14 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
         fixedPixelsTop: 0, // the number of pixels of your fixed header, default 0 (iOS and Android)
         fixedPixelsBottom: 0, // the number of pixels of your fixed footer (f.i. a tab bar), default 0 (iOS and Android)
         triggerTransitionEvent: '$ionicView.afterEnter', // internal ionic-native-transitions option
-        backInOppositeDirection: true // Takes over default back transition and state back transition to use the opposite direction transition to go back
+        backInOppositeDirection: false // Takes over default back transition and state back transition to use the opposite direction transition to go back
     });
 
+  $httpProvider.defaults.headers.common = {};
+  $httpProvider.defaults.headers.post = {};
+  $httpProvider.defaults.headers.put = {};
+  $httpProvider.defaults.headers.patch = {};
+  $httpProvider.defaults.headers.get = {};
 
   $stateProvider
 
@@ -69,14 +58,14 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
   .state('tab', {
     url: '/',
     templateUrl: 'templates/tabs.html',
-    controller: 'TabSlideCtrl'
+    controller: 'TabSlideCtrl',
+    params: {
+      slideNo: null,
+      searchTag: null
+    }
   })
   .state('movie', {
     url: '/movie/:movieId',
-    nativeTransitions: {
-      'type' : 'slide',
-      'direction': 'left'
-    },
     views: {
       '': {
         templateUrl: 'templates/movie.html',
@@ -98,13 +87,21 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
     params: {
       articleId: null
     }
+  })
+  .state('more', {
+    url: '/more',
+    views: {
+      '': {
+        templateUrl: 'templates/more.html',
+        controller: 'MoreCtrl'
+      }
+    }
   });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
 
 })
-
 // .config(function($httpProvider) {
 //   $httpProvider.interceptors.push(function($rootScope) {
 //     return {

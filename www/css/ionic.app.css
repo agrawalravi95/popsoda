@@ -5009,7 +5009,7 @@ ion-tabs.tabs-color-active-dark .tab-item {
     transition: color .1s ease; }
     .tabs-top.tabs-striped .tab-item.tab-item-active, .tabs-top.tabs-striped .tab-item.active, .tabs-top.tabs-striped .tab-item.activated {
       margin-top: 1px;
-      border-width: 0px 0px 2px 0px !important;
+      border-width: 0px px 2px 0px !important;
       border-style: solid; }
       .tabs-top.tabs-striped .tab-item.tab-item-active > .badge, .tabs-top.tabs-striped .tab-item.tab-item-active > i, .tabs-top.tabs-striped .tab-item.active > .badge, .tabs-top.tabs-striped .tab-item.active > i, .tabs-top.tabs-striped .tab-item.activated > .badge, .tabs-top.tabs-striped .tab-item.activated > i {
         margin-top: -1px; }
@@ -9240,7 +9240,8 @@ ion-slide {
 .article-list {
   margin: 0;
   width: 100%;
-  display: block; }
+  display: block;
+  background: #ffffff; }
 
 .discover-movies.discover-movies--fixed {
   position: fixed;
@@ -9264,7 +9265,9 @@ ion-slide {
 .popular-articles,
 .popsoda-recommended,
 .related-movies,
-.related-articles {
+.related-articles,
+.profile-movies,
+.profile-articles {
   padding: 0 20px;
   height: 50px;
   background: #f7f7f7; }
@@ -9272,21 +9275,27 @@ ion-slide {
   .popular-articles span,
   .popsoda-recommended span,
   .related-movies span,
-  .related-articles span {
+  .related-articles span,
+  .profile-movies span,
+  .profile-articles span {
     font-size: 14px;
     line-height: 50px; }
   .discover-movies span.time,
   .popular-articles span.time,
   .popsoda-recommended span.time,
   .related-movies span.time,
-  .related-articles span.time {
+  .related-articles span.time,
+  .profile-movies span.time,
+  .profile-articles span.time {
     float: right;
     color: rgba(0, 0, 0, 0.3); }
     .discover-movies span.time i,
     .popular-articles span.time i,
     .popsoda-recommended span.time i,
     .related-movies span.time i,
-    .related-articles span.time i {
+    .related-articles span.time i,
+    .profile-movies span.time i,
+    .profile-articles span.time i {
       position: relative;
       top: 1px;
       font-size: 16px;
@@ -9358,45 +9367,44 @@ ion-slide {
   .movie-recommended h2 {
     position: absolute;
     color: white;
-    bottom: 60px;
+    bottom: 18px;
     z-index: 3;
     padding: 0 10px;
     font-size: 14px;
+    line-height: 1.3;
     font-weight: bold;
-    width: 100%;
-    text-align: center;
+    width: 80%;
     text-overflow: clip;
     white-space: initial; }
   .movie-recommended a.followBtn,
   .movie-recommended a.following {
-    text-transform: uppercase;
-    font-size: 11px;
     font-weight: bold;
-    text-align: center;
     border-radius: 25px;
     color: #FFFFFF;
-    padding: 3px 7px;
+    padding: 3px 8px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.4);
     transition: all 150ms ease-out;
-    display: block;
-    margin: 0 auto;
     position: absolute;
-    bottom: 20px;
-    left: 0;
-    right: 0;
+    bottom: 15px;
+    right: 12px;
     z-index: 3; }
   .movie-recommended a.followBtn {
     background: #F7C069;
     max-width: 100px; }
     .movie-recommended a.followBtn:before {
-      content: '+  ';
-      font-size: 14px;
-      top: -2px; }
+      content: '+';
+      font-size: 16px;
+      top: -2px;
+      position: relative; }
   .movie-recommended a.following {
     max-width: 130px;
     background: #81B45D; }
     .movie-recommended a.following:before {
       content: '\2713  ';
-      font-size: 12px; }
+      font-size: 16px;
+      position: relative;
+      left: -1px;
+      top: 0; }
 
 .popular-articles-popup {
   position: absolute;
@@ -9451,17 +9459,17 @@ ion-slide {
     height: 50%;
     background: transparent;
     /* Old browsers */
-    background: -moz-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    background: -moz-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
     /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, transparent), color-stop(100%, rgba(0, 0, 0, 0.6)));
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, transparent), color-stop(100%, rgba(0, 0, 0, 0.8)));
     /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    background: -webkit-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
     /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    background: -o-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
     /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    background: -ms-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
     /* IE10+ */
-    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
     /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#000000',GradientType=0 );
     /* IE6-9 */ }
@@ -9479,14 +9487,13 @@ ion-slide {
   .article-block h2 {
     position: absolute;
     color: white;
-    bottom: 20px;
+    bottom: 15px;
     z-index: 3;
     padding: 0 10px;
     font-size: 14px;
     line-height: 18px;
     font-weight: bold;
     width: 100%;
-    text-align: center;
     text-overflow: clip;
     white-space: initial; }
   .article-popular.article--loading,
@@ -9583,7 +9590,9 @@ ion-slide {
       .search-content .search-friends .followers-container img {
         position: relative;
         border-radius: 50%;
-        border: 1px solid white; }
+        border: 1px solid white;
+        width: 40px;
+        height: 40px; }
         .search-content .search-friends .followers-container img:nth-child(1) {
           margin-right: -.75rem; }
         .search-content .search-friends .followers-container img:nth-child(2) {
@@ -9694,7 +9703,8 @@ ion-slide {
     padding-top: 80px; }
     .article-content-container .article-detail-container .image-container {
       position: relative;
-      background: #000; }
+      background: #000;
+      min-height: 180px; }
       .article-content-container .article-detail-container .image-container img {
         width: 100%; }
       .article-content-container .article-detail-container .image-container .overlay {
@@ -10002,11 +10012,11 @@ ion-slide {
             line-height: 20px; }
           .movie-content .movie-detail-container .movie-detail .articles-list .movie-article .item-content .article-source {
             position: absolute;
-            bottom: 25px;
+            bottom: 40px;
             font-size: 14px; }
           .movie-content .movie-detail-container .movie-detail .articles-list .movie-article .item-content .article-time {
             position: absolute;
-            bottom: 25px;
+            bottom: 40px;
             right: 15px;
             font-size: 14px; }
             .movie-content .movie-detail-container .movie-detail .articles-list .movie-article .item-content .article-time i {
@@ -10058,7 +10068,7 @@ ion-slide {
       z-index: 1; }
     .trending-content .trend-container h2.trend-movie-title {
       position: absolute;
-      top: 145px;
+      bottom: 15px;
       left: 20px;
       font-weight: bold;
       color: #FFFFFF;
@@ -10074,17 +10084,17 @@ ion-slide {
       z-index: 6;
       background: transparent;
       /* Old browsers */
-      background: -moz-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+      background: -moz-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
       /* FF3.6+ */
-      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, transparent), color-stop(100%, rgba(0, 0, 0, 0.5)));
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, transparent), color-stop(100%, rgba(0, 0, 0, 0.8)));
       /* Chrome,Safari4+ */
-      background: -webkit-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+      background: -webkit-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
       /* Chrome10+,Safari5.1+ */
-      background: -o-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+      background: -o-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
       /* Opera 11.10+ */
-      background: -ms-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+      background: -ms-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
       /* IE10+ */
-      background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+      background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
       /* W3C */
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#000000',GradientType=0 );
       /* IE6-9 */ }
@@ -10206,7 +10216,6 @@ ion-slide {
       .trending-content .trend-container .tweet-container .tweet-text {
         line-height: 20px;
         white-space: normal;
-        padding-bottom: 25px;
         font-size: 14px; }
       .trending-content .trend-container .tweet-container .tweet-retweet {
         position: absolute;
@@ -10232,7 +10241,7 @@ ion-slide {
           top: 1px; }
 
 .trailers-content {
-  background: #F5F6F8;
+  background: #F7F7F7;
   padding-bottom: 5rem; }
   .trailers-content .horizontal-line {
     background: #FFFFFF;
@@ -10244,7 +10253,7 @@ ion-slide {
   .trailers-content .circle-container {
     position: absolute;
     left: -42px;
-    top: 5px;
+    top: 3px;
     z-index: 1; }
     .trailers-content .circle-container .outer-circle {
       height: 30px;
@@ -10291,21 +10300,21 @@ ion-slide {
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 25%;
+        height: 40%;
         z-index: 6;
         background: transparent;
         /* Old browsers */
-        background: -moz-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+        background: -moz-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
         /* FF3.6+ */
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, transparent), color-stop(100%, rgba(0, 0, 0, 0.8)));
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, transparent), color-stop(100%, rgba(0, 0, 0, 0.9)));
         /* Chrome,Safari4+ */
-        background: -webkit-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+        background: -webkit-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
         /* Chrome10+,Safari5.1+ */
-        background: -o-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+        background: -o-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
         /* Opera 11.10+ */
-        background: -ms-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+        background: -ms-linear-gradient(top, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
         /* IE10+ */
-        background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+        background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
         /* W3C */
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#000000',GradientType=0 );
         /* IE6-9 */ }
@@ -10320,6 +10329,107 @@ ion-slide {
         text-transform: uppercase;
         color: white;
         position: absolute;
-        bottom: 20px;
+        bottom: 15px;
         left: 20px;
         z-index: 10; }
+
+.profile-content {
+  background: #f7f7f7;
+  position: relative; }
+  .profile-content a#popsoda-more {
+    position: absolute;
+    top: 1rem;
+    right: .75rem;
+    font-size: 16pt;
+    color: rgba(0, 0, 0, 0.7);
+    padding: 1rem; }
+  .profile-content .profile-info-container {
+    height: 200px;
+    position: relative; }
+    .profile-content .profile-info-container .profile-image-container {
+      display: block;
+      width: 100%;
+      padding-top: 2rem; }
+      .profile-content .profile-info-container .profile-image-container img#profile-image {
+        border-radius: 50%;
+        display: block;
+        margin: 0 auto;
+        height: 125px;
+        width: 125px; }
+    .profile-content .profile-info-container h3 {
+      font-size: 18px;
+      text-align: center;
+      font-weight: bold; }
+  .profile-content .profile-container--empty .empty-message {
+    width: 100%;
+    color: #888;
+    padding: 4rem;
+    text-align: center; }
+    .profile-content .profile-container--empty .empty-message i {
+      display: block;
+      color: #aaa;
+      font-size: 72px;
+      text-algin: center;
+      margin-bottom: 2rem; }
+  .profile-content .profile-container--empty a.facebook-sign-in {
+    border: 0;
+    padding: 1.25rem 1rem;
+    display: block;
+    width: 70%;
+    margin: 0 auto;
+    background: #547CD8;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+    border-radius: 5px; }
+    .profile-content .profile-container--empty a.facebook-sign-in i {
+      font-size: 24px;
+      position: absolute;
+      top: 18px;
+      padding-right: 1rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.5); }
+    .profile-content .profile-container--empty a.facebook-sign-in span {
+      margin-left: 2.5rem; }
+
+.more-content {
+  background: #f7f7f7; }
+  .more-content .more-header {
+    position: relative;
+    padding: 12px 0;
+    z-index: 0;
+    background: #fff; }
+    .more-content .more-header i.back-icon {
+      font-size: 25px;
+      position: absolute;
+      left: 10px;
+      top: 20px;
+      padding: 0 10px;
+      z-index: 1; }
+    .more-content .more-header h4 {
+      text-align: center; }
+  .more-content .info-block {
+    padding: 1.25rem;
+    background: white;
+    margin: 0.5rem 0; }
+    .more-content .info-block .info-title {
+      position: relative; }
+      .more-content .info-block .info-title h4 {
+        text-transform: uppercase;
+        font-size: 16px;
+        letter-spacing: 1px;
+        opacity: 0.5; }
+      .more-content .info-block .info-title i.description-toggle-icon {
+        position: absolute;
+        right: 10px;
+        top: -5px;
+        font-size: 18px;
+        color: rgba(0, 0, 0, 0.2);
+        padding: 0.5rem;
+        transition: transform 300ms ease-in-out; }
+        .more-content .info-block .info-title i.description-toggle-icon.description-toggle-icon--rotated {
+          transform: rotate(-180deg); }
+    .more-content .info-block .info-description.ng-hide-add {
+      animation: fadeOut 0.3s ease-in-out; }
+    .more-content .info-block .info-description.ng-hide-remove {
+      animation: fadeIn 0.3s ease-in-out; }

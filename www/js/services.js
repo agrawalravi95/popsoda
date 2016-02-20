@@ -1,19 +1,18 @@
 angular.module('popsoda.services', [])
-
-.factory('User', function() {
+.factory('User', function($http) {
   
-  var userID,
-      defaultID = "0X0X001239956XXA",
-      defaultUser = "popsodauser",
+  var userID = "0",
       userFbInfo,
-      userTwitterInfo;
+      userTwitterInfo,
+      logInProvider = "App";
 
   var setUser = function(user_data) {
-    window.localStorage.starter_facebook_user = JSON.stringify(user_data);
+    userID = "" + user_data;
+    window.localStorage.userID = userID;
   };
 
   var getUser = function(){
-    return JSON.parse(window.localStorage.starter_facebook_user || '{}');
+    return userID;
   };
 
   var setUserFbInfo = function(info){
@@ -25,12 +24,68 @@ angular.module('popsoda.services', [])
     return JSON.parse(window.localStorage.userFbInfo || '{}');
   };
 
+  var getLoginState = function() {
+    try {
+      if(userFbInfo.authResponse.session_key == true)
+      return true;
+    }
+    catch(err) {
+      return false;
+    }
+    
+  }
+
   var setUserTwitterInfo = function(info) {
     userTwitterInfo = info;
+    window.localStorage.userTwitterInfo = JSON.stringify(info);
   }
 
   var getUserTwitterInfo = function(info) {
-    return userTwitterInfo;
+    return JSON.parse(window.localStorage.userTwitterInfo || '{}');
+  }
+
+  var setUserFbInfoAPI = function() {
+
+    logInProvider = "Facebook";
+
+    var friendsList = "",
+        firstName = userFbInfo.name.substr(0, userFbInfo.name.indexOf(' ')),
+        lastName = userFbInfo.name.substr(userFbInfo.name.indexOf(' '), userFbInfo.name.length);
+
+    for (var i = userFbInfo.friends.data.length - 1; i >= 1; i--) {
+      friendsList = friendsList + userFbInfo.friends.data[i].id + ",";
+    }
+
+    friendsList = friendsList + userFbInfo.friends.data[i].id;
+
+    var req = {
+      method: 'POST',
+      url: 'https://popsoda.mobi/api/index.php/userlogin',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      transformRequest: function(obj) {
+        var str = [];
+        for(var p in obj)
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        return str.join("&");
+      },
+      data: { 
+      fb_provider_key: userFbInfo.userID,
+      fname: firstName,
+      lname: lastName,
+      email: userFbInfo.email,
+      friends_ID: friendsList,
+      login_provider: logInProvider,
+      app_id: "POP_APP_MOB_420"
+      }
+    };
+
+    return $http(req).
+    then(function successCallback(response) {
+      console.log(response);
+      userID = response.data.user_id;
+    }, function errorCallback(response) {
+      console.log(response);
+    });
   }
 
   return {
@@ -39,19 +94,20 @@ angular.module('popsoda.services', [])
     setUserFbInfo: setUserFbInfo,
     getUserFbInfo: getUserFbInfo,
     setUserTwitterInfo: setUserTwitterInfo,
-    getUserTwitterInfo: getUserTwitterInfo
+    getUserTwitterInfo: getUserTwitterInfo,
+    setUserFbInfoAPI: setUserFbInfoAPI,
+    getLoginState: getLoginState
   };
 })
 
-.factory('Movies', function($http) {
+.factory('Movies',function($http, $rootScope) {
 
   var movies = [],
       movieDetail;
 
-
   return {
     all: function() {
-      if(movies.length > 0) {
+      if(movies) {
         return movies;
       }
       else {
@@ -70,16 +126,8 @@ angular.module('popsoda.services', [])
       }
     },
 
-    set: function(moviesFromAPI) {
-      var i = 0, len = moviesFromAPI.length;
-      for(; i<len; i++) {
-        movies.push(moviesFromAPI[i]);
-      };
-      return movies;
-    },
-
-    getDetails: function (movieId) {
-      return $http.get("https://popsoda.mobi/api/index.php/getmovie/" + movieId + "/3")
+    getDetails: function (user_id, movieId) {
+      return $http.get("https://popsoda.mobi/api/index.php/getmovie/" + movieId + "/"+user_id)
       .then(function successCallback (response) {
         movieDetail = response.data;
         return movieDetail;
@@ -89,13 +137,37 @@ angular.module('popsoda.services', [])
       })
     },
 
-    toggleFollow: function(movieId) {
-      return false;
+    toggleFollow: function(user_id, movieId, follow) {
+      console.log(user_id);
+      console.log(movieId);
+      console.log(follow);
+      var req = {
+        method: 'POST',
+        url: 'https://popsoda.mobi/api/index.php/follow',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        transformRequest: function(obj) {
+          var str = [];
+          for(var p in obj)
+          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+          return str.join("&");
+        },
+        data: { 
+        follow: parseInt(follow),
+        user_id : parseInt(user_id),
+        movie_id : parseInt(movieId) }
+      };
+
+      return $http(req)
+      .then(function successCallback(response) {
+        console.log(response);
+      }, function errorCallback(response) {
+        console.log(response);
+      })
     },
 
-    getFeed: function(){
+    getFeed: function(user_id){
 
-      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/0/4")
+      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/"+ user_id +"/0/4")
       .then(function successCallback(response){
         movies = response.data;
         window.localStorage.removeItem('localMovies');
@@ -109,20 +181,17 @@ angular.module('popsoda.services', [])
       });
     },
 
-    getMore: function(lastMovie) {
+    getMore: function(user_id, lastMovie) {
 
       lastMovie = new Date(Date.parse(lastMovie) / 1000);
       lastMovie -= (lastMovie.getTimezoneOffset() * 60);
 
-      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/3/" + lastMovie + "/10").then(function(response){
+      return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/" + user_id +"/" + lastMovie + "/10").then(function(response){
         var newMovies = response.data;
         movies = movies.concat(newMovies);
         console.log(lastMovie);
         return newMovies;
       });
-    },
-    setFeed: function() {
-
     }
   }
 
@@ -134,7 +203,7 @@ angular.module('popsoda.services', [])
 
   return{
     all: function () {
-      if(articles.length > 0) {
+      if(articles) {
         return articles;
       }
       else {
@@ -188,8 +257,8 @@ angular.module('popsoda.services', [])
       });
     },
 
-    getDetails: function (articleId) {
-      return $http.get("https://popsoda.mobi/api/index.php/getarticle/" + articleId)
+    getDetails: function (user_id, articleId) {
+      return $http.get("https://popsoda.mobi/api/index.php/getarticle/" + user_id + "/" +articleId)
       .then(function successCallback (response) {
         articleDetail = response.data;
         return articleDetail;
@@ -216,6 +285,31 @@ angular.module('popsoda.services', [])
 
     unshift: function(articlesFromView) {
       articles.unshift(articlesFromView);
+    },
+
+    toggleLike: function(user_id, article_id, article_like) {
+      var req = {
+        method: 'POST',
+        url: 'https://popsoda.mobi/api/index.php/like',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        transformRequest: function(obj) {
+          var str = [];
+          for(var p in obj)
+          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+          return str.join("&");
+        },
+        data: { 
+        like: parseInt(article_like),
+        user_id : parseInt(user_id),
+        article_id : parseInt(article_id) }
+      };
+
+      return $http(req)
+      .then(function successCallback(response) {
+        console.log(response);
+      }, function errorCallback(response) {
+        console.log(response);
+      })
     }
   }
 })
@@ -227,21 +321,6 @@ angular.module('popsoda.services', [])
       oauthToken,
       oauthTokenSecret;
 
-  // var getConfig = function() {
-  //     return { headers: {
-
-  //       'Authorization' : 'OAuth',
-  //       'oauth_consumer_key' : '5FcFAFzcsyxzVLp99I55z61lO',
-  //       'oauth_nonce' : '' + [Math.random()*123456789], 
-  //       'oauth_signature' : 'v66gCAIOBG7kSqbDj3aJBeEcXnw%3D', 
-  //       'oauth_signature_method' : 'HMAC-SHA1',
-  //       'oauth_timestamp' : '' + Date().getTime()/1000,
-  //       'oauth_token' : oauthToken,
-  //       'oauth_token_secret' : oauthTokenSecret,
-  //       'oauth_version' : '1.0'
-  //     }}
-  // };
-
   var getRandomColor =  function() {
     return colors[Math.floor(Math.random() * 3)];
   };
@@ -249,7 +328,7 @@ angular.module('popsoda.services', [])
   return {
 
     all: function (argument) {
-      if(trends.length > 0) {
+      if(trends) {
         return trends;
       }
       else {
@@ -259,8 +338,8 @@ angular.module('popsoda.services', [])
       }
     },
 
-    getFeed: function () {
-      return $http.get("https://popsoda.mobi/api/index.php/twitter/0/10")
+    getFeed: function (user_id) {
+      return $http.get("https://popsoda.mobi/api/index.php/twitter/"+user_id+ "/0/10")
       .then(function successCallback(response){
         trends = response.data;
 
@@ -291,7 +370,7 @@ angular.module('popsoda.services', [])
 
       lastTrend = Date.parse(lastTrend) / 1000;
 
-      return $http.get("https://popsoda.mobi/api/index.php/twitter/" + lastTrend + "/10").then(function(response){
+      return $http.get("https://popsoda.mobi/api/index.php/twitter/"+ user_id +"/" + lastTrend + "/10").then(function(response){
         var newTrends = response.data;
 
         for (var i = newTrends.length - 1; i >= 0; i--) {
@@ -369,7 +448,9 @@ angular.module('popsoda.services', [])
 
         $http.get("https://popsoda.mobi/api/index.php/typeahead/" + searchFilter).then(function(response) {
 
+
           if(response.data.tag[0].hasOwnProperty("result") && response.data.tag[0].result == "404"){
+            deferred.reject(response.data);
             return deferred.promise;
           }
 
@@ -392,11 +473,7 @@ angular.module('popsoda.services', [])
 
     };
 
-    var getMatches = function() {
-      return matches;
-    }
-
-    var getSearchResult = function(tagID) {
+    var getSearchResult = function(user_id, tagID) {
       return $http.get("https://popsoda.mobi/api/index.php/searchbytag/"+tagID).then(function successCallback(response) {
 
         searchResult = response.data;
@@ -405,35 +482,40 @@ angular.module('popsoda.services', [])
       });
     };
 
-    var searchByGenre = function(genres) {
-
+    var searchByGenre = function(user_id, genres) {
 
       var str = 'https://popsoda.mobi/api/index.php/searchmoviebygenre/';
 
       for (var i = genres.length - 1; i >= 1; i--) {
-        str = str + genres[i] + '/';
+        str = str + genres[i] + ',';
         console.log(str);
       };
 
       str = str + genres[i];
 
-      console.log(str);
-
       return $http.get(str).then(function successCallback(response) {
 
-        genreResult = response.data.movie;
+        genreResult = response.data;
         return genreResult;
 
       }, function errorCallback(response) {
         genreResult = [{'result' : '404'}];
         return genreResult;
       });
+    };
+
+    var getRecommendedArticles = function() {
+      return $http.get("https://popsoda.mobi/api/index.php/recommend").then(function(response) {
+        return response.data;
+      }, function(response) {
+        console.log("Error: "+ response.data);
+      });
     }
 
   return {
 
     searchTags : searchTags,
-    getMatches : getMatches,
+    getRecommendedArticles : getRecommendedArticles,
     getSearchResult: getSearchResult,
     searchByGenre: searchByGenre,
 

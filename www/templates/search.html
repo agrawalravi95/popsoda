@@ -16,20 +16,22 @@
 	  	<ion-item ng-if="data.search.length && !data.tags.length" class="result--none">
 	  		No Results Found
 	  	</ion-item>
+		
+		<ion-item ng-if="data.search.length && !data.tags.length" class="result--none">
+	  		No Results Found
+	  	</ion-item>
+
 		<ion-item ng-repeat="tag in data.tags track by $index" class="result" ng-click="searchResultClicked(tag)">
 			{{tag.tag_name}}
 		</ion-item>
 	  </ion-list>
 		
 		<div class="search-none" ng-if="searchResultClick">
-			<div class="search-friends" ng-hide="showGenresToggle">
+			<div class="search-friends" ng-hide="showGenresToggle || !FbLoginToggle">
 				<span>Movies your friends follow</span>
 
 				<div class="followers-container">
-					<img src="http://placehold.it/40x40">
-					<img src="http://placehold.it/40x40">
-					<img src="http://placehold.it/40x40">
-
+					<img ng-src="{{ 'http://graph.facebook.com/' + friend.id + '/picture?type=small'}}" ng-repeat="friend in friends | limitTo:3">
 					<i class="ion-chevron-right"></i>
 				</div>
 			</div>
@@ -45,7 +47,9 @@
 
 			<div class="search-genre--notags" ng-hide="selectedGenresExist || !showGenresToggle">Tap on one or more genres above to search.</div>
 
-			<div class="search-genre--notags" ng-show="selectedGenresExist && showMoviesError">Sorry! No movies match your criteria.</div>
+			<div class="search-genre--notags" ng-show="selectedGenresExist && showMovieLoading">Searching...</div>
+
+			<div class="search-genre--notags" ng-show="selectedGenresExist && showMovieError">Sorry! No movies match your criteria.</div>
 
 			<div class="search-articles" ng-hide="showGenresToggle">
 				<div class="popsoda-recommended">
@@ -54,7 +58,7 @@
 
 				<ion-list class="article-list">
 					<ion-item class="article-block" ng-repeat="recommendedArticle in recommendedArticles track by recommendedArticle.article_id">
-						<h2 ui-sref="article({articleId: recommendedArticle.article_id})"> {{ ::article.title | limitTo: 27}}<span>{{ article.title.length > 27 ? '...' : ' ' }}
+						<h2 ui-sref="article({articleId: recommendedArticle.article_id})"> {{ ::recommendedArticle.title | limitTo: 27}}<span>{{ recommendedArticle.title.length > 27 ? '...' : ' ' }}
           				</span></h2>
 						<div class="overlay"></div>
 						<img image-lazy-src="{{ recommendedArticle.hero_image.length < 1 ? 'http://img.youtube.com/vi/' + recommendedArticle.hero_video_url + '/0.jpg' : recommendedArticle.hero_image }}" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent" class="article-img" ui-sref="article({articleId: recommendedArticle.article_id})">
@@ -65,12 +69,12 @@
 
 		<div class="search-result-container" ng-show="searchResultToggle">
 		
-		<div class="related-movies-container" ng-show="searchResultMoviesToggle">
+		<div class="related-movies-container" ng-show="searchResultMoviesToggle" ng-if="movies.result !== 404">
 			<div class="related-movies">
 				<span>Related Movies</span>
 			</div>
 
-	      <ion-list class="list-inset movie-list" ng-class="{'movie-list--article-hidden' : !searchResultArticlesToggle}">	 
+	      <ion-list class="list-inset movie-list" ng-class="{'movie-list--article-hidden' : !searchResultArticlesToggle}" >	 
 	        <ion-item class="movie-recommended" ng-repeat="movie in movies track by movie.movie_id" >
 
 	          <div ng-controller="FollowCtrl">
@@ -78,7 +82,7 @@
 	            </span>
 	            </h2>
 
-	            <a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie)" name="followBtn"> {{ movie.follow == 1 ? "Following" : "Follow" }} </a>
+	            <a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie)" name="followBtn"></a>
 
 	            <div class="overlay" ></div>
 
@@ -88,7 +92,7 @@
 	      </ion-list>
 	    </div>
 
-	    <div class="related-articles-container" ng-show="searchResultArticlesToggle">
+	    <div class="related-articles-container" ng-show="searchResultArticlesToggle" ng-if="articles.result !== 404">
 			
 			<div class="related-articles">
 				<span>Related Articles</span>

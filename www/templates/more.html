@@ -1,0 +1,20 @@
+<ion-view view-title="More">
+	<ion-content class="more-content">
+		<div class="more-header">
+			<i class="icon ion-ios-arrow-back back-icon" ng-click="goBack()"></i>
+			<h4> Popsoda </h4>
+		</div>
+
+		<div class="info-block" ng-repeat="group in groups track by $index">
+			<div class="info-title">
+				<h4>{{group.title}}</h4>
+
+				<i class="ion-chevron-down description-toggle-icon" ng-class="{'description-toggle-icon--rotated': group.show}" ng-click="toggleGroup(group)"></i>
+			</div>
+
+			<div class="info-description" ng-show="group.show">
+				{{group.content}}
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

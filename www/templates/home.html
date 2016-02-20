@@ -44,7 +44,7 @@
             </span>
             </h2>
 
-            <a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie)" name="followBtn"> {{ movie.follow == 1 ? "Following" : "Follow" }} </a>
+            <a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie)" name="followBtn"></a>
 
             <div class="overlay" ></div>
 
@@ -78,7 +78,7 @@
       <ion-list class="list-inset article-list">
         <ion-item class="article-popular" ng-repeat="article in articles track by article.article_id">
 
-          <h2 ui-sref="article({articleId: article.article_id})"> {{ ::article.title | limitTo: 27}}<span>{{ article.title.length > 27 ? '...' : ' ' }}
+          <h2 ui-sref="article({articleId: article.article_id})"> {{ ::article.title | limitTo: 36}}<span>{{ article.title.length > 36 ? '...' : ' ' }}
           </span></h2>
           
           <div class="overlay"></div>

@@ -11,7 +11,7 @@
 
 
   			<div ng-controller="FollowCtrl">
-  				<a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie)" name="followBtn"> {{ movie.follow == 1 ? "Following" : "Follow" }} </a>
+  				<a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie.movie_id)" name="followBtn"> {{ movie.follow == 1 ? "Following" : "Follow" }} </a>
   			</div>
 
 				<div class="followers-container">
@@ -41,10 +41,10 @@
 				</p>
 
 				<div class="tags-container">
-					<div ng-repeat="tag in tags track by tag.tag_name" ng-click="tagClick()" class="movie-tag"> {{ :: tag.tag_name }}</div>
+					<div ng-repeat="tag in tags track by tag.tag_name" ui-sref="tab({slideNo:3, searchTag: tag})" class="movie-tag"> {{ :: tag.tag_name }}</div>
 				</div>
 
-				<ion-list class="articles-list" ng-if="articles.result == 404">
+				<ion-list class="articles-list" ng-if="articles[0].result !== '404'">
 					<ion-item class="movie-article item item-thumbnail-left" ng-repeat="article in articles track by $index" ui-sref="article({articleId : article.article_id})">
 
 						<img src="{{ article.hero_image.length < 1 ? 'http://img.youtube.com/vi/' + article.hero_video_url + '/0.jpg' : article.hero_image }} ">

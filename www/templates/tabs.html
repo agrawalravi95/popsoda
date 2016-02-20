@@ -1,32 +1,32 @@
 <ion-content scroll="false">
 
-  <ion-view ng-hide="loggedIn == true" ng-include="'templates/welcome.html'" ng-controller="WelcomeCtrl" class="welcome-content" view-title="Welcome">{{}}</ion-view> 
+  <ion-view ng-hide="loggedIn == true" ng-include="'templates/welcome.html'" ng-controller="WelcomeCtrl" class="welcome-content" view-title="Welcome"></ion-view> 
   
   <ion-slide-box  show-pager="false" ion-slide-tabs on-slide-change="slideHasChanged()" does-continue="false">
     
     <ion-slide
       ion-slide-tab-label="<i class='ion-android-home home-icon'></i>">
-      <ion-view ng-include="'templates/home.html'" ng-controller="HomeCtrl"></ion-view>
+      <ion-view ng-include="'templates/home.html'" ng-controller="HomeCtrl" view-title="Home"></ion-view>
     </ion-slide>
 
     <ion-slide
       ion-slide-tab-label="<i class='ion-arrow-graph-up-right trending-icon'></i>">
-      <ion-view ng-include="'templates/trending.html'" ng-controller='TrendingCtrl'></ion-view>
+      <ion-view ng-include="'templates/trending.html'" ng-controller='TrendingCtrl' view-title="Trending"></ion-view>
     </ion-slide>
 
     <ion-slide
       ion-slide-tab-label="<i class='ion-film-marker trailers-icon'></i>">
-      <ion-view ng-include="'templates/trailers.html'" ng-controller="TrailersCtrl"></ion-view>
+      <ion-view ng-include="'templates/trailers.html'" ng-controller="TrailersCtrl" view-title="Trailers"></ion-view>
     </ion-slide>
 
     <ion-slide
       ion-slide-tab-label="<i class='ion-search search-icon'></i>">
-      <ion-view ng-include="'templates/search.html'" ng-controller='SearchCtrl'></ion-view>
+      <ion-view ng-include="'templates/search.html'" ng-controller='SearchCtrl' view-title="Search"></ion-view>
     </ion-slide>
 
     <ion-slide
       ion-slide-tab-label="<i class='ion-person profile-icon'></i>" on-drag-right="enableSlide()">
-      <ion-view ng-include="'templates/profile.html'"></ion-view>
+      <ion-view ng-include="'templates/profile.html'" ng-controller='ProfileCtrl' view-title="Profile"></ion-view>
     </ion-slide>
   </ion-slide-box>
 </ion-content>

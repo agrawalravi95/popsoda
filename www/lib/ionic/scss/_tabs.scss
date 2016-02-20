@@ -304,7 +304,7 @@ ion-tabs {
       &.active,
       &.activated {
         margin-top: $tabs-striped-border-width - 1px;
-        border-width: 0px 0px $tabs-striped-border-width 0px !important;
+        border-width: 0px px $tabs-striped-border-width 0px !important;
         border-style: solid;
         > .badge, > i{
           margin-top: -$tabs-striped-border-width + 1px;
