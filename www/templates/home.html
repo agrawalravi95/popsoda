@@ -40,7 +40,7 @@
         <ion-item class="movie-recommended" ng-repeat="movie in movies track by movie.movie_id">
 
           <div ng-controller="FollowCtrl">
-            <h2 ui-sref="movie({movieId: movie.movie_id})">{{ ::movie.name | limitTo: 27}}<span>{{ movie.name.length > 27 ? '...' : ' '}}
+            <h2 ui-sref="movie({movieId: movie.movie_id})">{{ ::movie.name | limitTo: 36}}<span>{{ movie.name.length > 36 ? '...' : ' '}}
             </span>
             </h2>
 

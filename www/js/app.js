@@ -11,20 +11,8 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
 
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
+      StatusBar.styleLightContent();
     }
-    
-    // Connection Test
-    
-    // if(window.Connection) {
-    //   if(navigator.connection.type == Connection.NONE) {
-    //       alert('There is no internet connection available');
-    //   }else{
-    //       alert(navigator.connection.type);
-    //   }
-    // }else{
-    //       alert('Cannot find Window.Connection');
-    // }
 
   });
 })

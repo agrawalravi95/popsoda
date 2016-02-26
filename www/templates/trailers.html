@@ -17,7 +17,7 @@
 			<div class="img-container" ui-sref="article({articleId: weekendTrailer.article_id})">
 				<div class="overlay"></div>
 				<img image-lazy-src="{{ 'http://img.youtube.com/vi/' + weekendTrailer.hero_video_url + '/0.jpg' }}" class="trailer-img" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent"/>
-				<h2>{{weekendTrailer.movie_name | limitTo: 27}}<span>{{ weekendTrailer.movie_name.length > 27 ? '...' : ' ' }} </span></h2>
+				<h2>{{weekendTrailer.movie_name | limitTo: 36}}<span>{{ weekendTrailer.movie_name.length > 36 ? '...' : ' ' }} </span></h2>
 			</div>
 		</ion-item>
 
@@ -35,7 +35,7 @@
 			<div class="img-container" ui-sref="article({articleId: thisMonthTrailer.article_id})">
 				<div class="overlay"></div>
 				<img image-lazy-src="{{ 'http://img.youtube.com/vi/' + thisMonthTrailer.hero_video_url + '/0.jpg' }}" class="trailer-img" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent"/>
-				<h2>{{thisMonthTrailer.movie_name | limitTo: 27}}<span>{{ thisMonthTrailer.movie_name.length > 27 ? '...' : ' ' }} </span></h2>
+				<h2>{{thisMonthTrailer.movie_name | limitTo: 36}}<span>{{ thisMonthTrailer.movie_name.length > 36 ? '...' : ' ' }} </span></h2>
 			</div>
 		</ion-item>
 
@@ -53,7 +53,7 @@
 			<div class="img-container" ui-sref="article({articleId: nextMonthTrailer.article_id})">
 				<div class="overlay"></div>
 				<img image-lazy-src="{{ 'http://img.youtube.com/vi/' + nextMonthTrailer.hero_video_url + '/0.jpg' }}" class="trailer-img" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent"/>
-				<h2>{{nextMonthTrailer.movie_name | limitTo: 27}}<span>{{ thisMonthTrailer.movie_name.length > 27 ? '...' : ' ' }} </span></h2>
+				<h2>{{nextMonthTrailer.movie_name | limitTo: 36}}<span>{{ thisMonthTrailer.movie_name.length > 36 ? '...' : ' ' }} </span></h2>
 			</div>
 		</ion-item>
 

@@ -1,13 +1,15 @@
 angular.module('popsoda.services', [])
 .factory('User', function($http) {
   
-  var userID = "0",
-      userFbInfo,
+  var userID = "" + (window.localStorage.userID || "0"),
+      userFbInfo = JSON.parse(window.localStorage.userFbInfo || '{}') ,
       userTwitterInfo,
-      logInProvider = "App";
+      logInProvider = "App",
+      userMovies,
+      userArticles;
 
   var setUser = function(user_data) {
-    userID = "" + user_data;
+    userID = window.localStorage.userID;
     window.localStorage.userID = userID;
   };
 
@@ -21,7 +23,8 @@ angular.module('popsoda.services', [])
   };
 
   var getUserFbInfo = function(info){
-    return JSON.parse(window.localStorage.userFbInfo || '{}');
+    if(userFbInfo) return userFbInfo;
+    else return JSON.parse(window.localStorage.userFbInfo || '{}');
   };
 
   var getLoginState = function() {
@@ -83,8 +86,39 @@ angular.module('popsoda.services', [])
     then(function successCallback(response) {
       console.log(response);
       userID = response.data.user_id;
+      window.localStorage.userID = userID;
     }, function errorCallback(response) {
       console.log(response);
+    });
+  }
+
+  var getMovies = function(user_id) {
+    return $http.get("https://popsoda.mobi/api/index.php/user_follow_movies/"+ user_id)
+    .then(function successCallback(response){
+      userMovies = response.data;
+      window.localStorage.removeItem('localUserMovies');
+      window.localStorage.setItem('localUserMovies', JSON.stringify(userMovies));
+      return userMovies;
+    }, 
+    function errorCallback() {
+      userMovies = JSON.parse(window.localStorage.getItem('localUserMovies'));
+      console.log("Fetched from local");
+      return userMovies;
+    });
+  }
+
+  var getArticles = function(user_id) {
+    return $http.get("https://popsoda.mobi/api/index.php/user_like_article/"+ user_id)
+    .then(function successCallback(response){
+      userArticles = response.data;
+      window.localStorage.removeItem('localUserArticles');
+      window.localStorage.setItem('localUserArticles', JSON.stringify(userArticles));
+      return userArticles;
+    }, 
+    function errorCallback() {
+      userArticles = JSON.parse(window.localStorage.getItem('localUserArticles'));
+      console.log("Fetched from local");
+      return userArticles;
     });
   }
 
@@ -96,7 +130,9 @@ angular.module('popsoda.services', [])
     setUserTwitterInfo: setUserTwitterInfo,
     getUserTwitterInfo: getUserTwitterInfo,
     setUserFbInfoAPI: setUserFbInfoAPI,
-    getLoginState: getLoginState
+    getLoginState: getLoginState,
+    getMovies: getMovies,
+    getArticles: getArticles
   };
 })
 
@@ -346,6 +382,9 @@ angular.module('popsoda.services', [])
         for (var i = trends.length - 1; i >= 0; i--) {
           trends[i].tweet1.color = getRandomColor();
           trends[i].tweet2.color = getRandomColor();
+          console.log(trends[i].mutual_friends_follow);
+          trends[i].friends = trends[i].mutual_friends_follow.split(',');
+          console.log(trends[i].friends);
         };
 
         window.localStorage.removeItem('localTrends');
@@ -359,6 +398,9 @@ angular.module('popsoda.services', [])
         for (var i = trends.length - 1; i >= 0; i--) {
           trends[i].tweet1.color = getRandomColor();
           trends[i].tweet2.color = getRandomColor();
+          console.log(trends[i].mutual_friends_follow);
+          trends[i].friends = trends[i].mutual_friends_follow.split(',');
+          console.log(trends[i].friends);
         };
 
         console.log("Fetched from local");
@@ -366,7 +408,7 @@ angular.module('popsoda.services', [])
       });
     },
 
-    getMore: function (lastTrend) {
+    getMore: function (user_id, lastTrend) {
 
       lastTrend = Date.parse(lastTrend) / 1000;
 
@@ -376,6 +418,7 @@ angular.module('popsoda.services', [])
         for (var i = newTrends.length - 1; i >= 0; i--) {
           newTrends[i].tweet1.color = getRandomColor();
           newTrends[i].tweet2.color = getRandomColor();
+          trends[i].friends = trends[i].mutual_friends_follow.split(',');
         };
 
         trends = trends.concat(newTrends);

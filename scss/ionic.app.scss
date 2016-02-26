@@ -1,20 +1,14 @@
-/*
-To customize the look and feel of Ionic, you can override the variables
-in ionic's _variables.scss file.
 
-For example, you might change some of the default colors:
-
-$light:                           #fff !default;
-$stable:                          #f8f8f8 !default;
-$positive:                        #387ef5 !default;
-$calm:                            #11c1f3 !default;
-$balanced:                        #33cd5f !default;
-$energized:                       #ffc900 !default;
-$assertive:                       #ef473a !default;
-$royal:                           #886aea !default;
-$dark:                            #444 !default;
-$home:                            #ff0000 !default;
-*/
+// $light:                           #fff !default;
+// $stable:                          #f8f8f8 !default;
+// $positive:                        #387ef5 !default;
+// $calm:                            #11c1f3 !default;
+// $balanced:                        #33cd5f !default;
+// $energized:                       #ffc900 !default;
+// $assertive:                       #ef473a !default;
+// $royal:                           #886aea !default;
+// $dark:                            #444 !default;
+// $home:                            #ff0000 !default;
 
 $home:                            #F46664 !default;
 $trending:                        #F7B955 !default;
@@ -38,6 +32,11 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 html, body {
   height: 100%;
+  font-family: 'montserratlight' !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'montserratbold' !important;
 }
 
 
@@ -80,6 +79,58 @@ html, body {
   text-align: center;
 }
 
+.no-connection-overlay {
+  position: absolute;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(50% 50%, circle, rgba(black, 0.8), transparent);
+  background: -webkit-radial-gradient(50% 50%, circle, rgba(black, 0.8), transparent);
+  background: -moz-radial-gradient(50% 50%, circle, rgba(black, 0.8), transparent);
+  background: -ms-radial-gradient(50% 50%, circle, rgba(black, 0.8), transparent);
+
+  .no-connection-popup {
+    position: relative;
+    z-index: 10;
+    top: calc( 50% - 75px);
+    display: block;
+    margin: 0 auto;
+    width: 80%;
+    padding: 2rem 1rem;
+    border-radius: 5px;
+    background: white;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.9;
+    font-size: 12px;
+    font-weight: bold;
+    color: #888;
+
+    &:after {
+      background: white;
+      content: " ";
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      left: calc(50% - 10px);
+      bottom: -15px;
+      transform: rotate(45deg);
+    }
+  }
+
+  i.close-icon {
+    position: absolute;
+    z-index: 10;
+    top: 65%;
+    font-size: 48px;
+    color: white;
+    left: calc( 50% - 16px);
+  }
+}
+
+
 
 
 
@@ -117,11 +168,12 @@ html, body {
     position: relative;
     display: block;
     margin: 5rem auto;
+    width: 180px;
   }
 
   a.facebook-sign-in {
     border: 0;
-    padding: 1.25rem 1rem;
+    padding: 0.75rem .75rem;
     margin-top: 10rem;
     display: block;
     background: #547CD8;
@@ -134,9 +186,9 @@ html, body {
     i {
       font-size: 24px;
       position: absolute;
-      top: 18px;
+      top: 10px;
       padding-right: 1rem;
-      border-right: 1px solid rgba(white, 0.5)
+      border-right: 1px solid rgba(white, 0.3)
     }
 
     span {
@@ -283,7 +335,8 @@ ion-slide {
   background: #ffffff;
 }
 
-.discover-movies {
+.discover-movies,
+.profile-movies {
 
   &.discover-movies--fixed {
     position: fixed;
@@ -427,7 +480,8 @@ ion-slide {
     font-weight: bold;
     border-radius: 25px;
     color: #FFFFFF;
-    padding: 3px 8px;
+    padding: 3px 10px;
+    padding-top: 6px;
     box-shadow: 0px 1px 5px rgba(0,0,0,0.4);
     transition: all 150ms ease-out;
     position: absolute;
@@ -741,7 +795,7 @@ ion-slide {
       position: absolute;
       top: 0.75rem;
       right: 0.75rem;
-      font-size: 24px;
+      font-size: 18px;
       color: white;
       opacity: 0.5;
     }
@@ -880,7 +934,7 @@ ion-slide {
         position: absolute;
         bottom: 20px;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 20px;
         padding: 0 20px;
         margin: 0;
         color: white;
@@ -894,7 +948,7 @@ ion-slide {
 
       h2.article-title {
         font-weight: bold;
-        font-size: 16px;
+        font-size: 20px;
         padding: 0 20px;
         margin: 0;
         margin: 20px 0;
@@ -918,6 +972,14 @@ ion-slide {
           opacity: 0.3;
           position: relative;
           top: 1px;
+        }
+      }
+
+      .likes {
+
+        i.liked {
+          color: #F69897;
+          opacity: 1;
         }
       }
 
@@ -955,7 +1017,7 @@ ion-slide {
       // Follow Button
 
       h2 {
-        width: 70%;
+        width: 50%;
         display: inline-block;
         font-size: 14px;
         line-height: 1.5;
@@ -1353,7 +1415,7 @@ ion-slide {
     .image-container {
       position: relative;
       max-height: 180px;
-      height: 180px;
+      height: 150px;
       background: #FFFFFF;
 
       .image-loader {
@@ -1399,8 +1461,8 @@ ion-slide {
       position: relative;
       top: -50px;
       z-index: 4;
-      clip-path: polygon(0px 230px, 360px 230px, 360px 50px, 0px 50px);
-      -webkit-clip-path: polygon(0px 230px, 360px 230px, 360px 50px, 0px 50px);
+      clip-path: polygon(0px 200px, 360px 200px, 360px 20px, 0px 20px);
+      -webkit-clip-path: polygon(0px 200px, 360px 200px, 360px 20px, 0px 20px);
     }
 
     .movie-detail {
@@ -1668,6 +1730,12 @@ ion-slide {
         height: 200px;
         position: relative;
 
+        .image-loader {
+          position: absolute;
+          top: 40%;
+          left: calc(50% - 14px);
+        }
+
         .overlay {
           position: absolute;
           bottom: 0;
@@ -1688,6 +1756,7 @@ ion-slide {
 
         h2 {
           font-weight: bold;
+          font-size: 14px;
           text-transform: uppercase;
           color: white;
           position: absolute;
@@ -1702,8 +1771,11 @@ ion-slide {
 
 //Profile Section
 .profile-content {
-  background: #f7f7f7;
   position: relative;
+
+  .scroll {
+    background: #f7f7f7;    
+  }
 
   a#popsoda-more {
     position: absolute;
@@ -1758,9 +1830,9 @@ ion-slide {
 
     a.facebook-sign-in {
       border: 0;
-      padding: 1.25rem 1rem;
+      padding: 0.75rem 0.75rem;
       display: block;
-      width: 70%;
+      width: 60%;
       margin: 0 auto;
       background: #547CD8;
       color: white;
@@ -1772,14 +1844,36 @@ ion-slide {
       i {
         font-size: 24px;
         position: absolute;
-        top: 18px;
+        top: 10px;
+        left: 20px;
         padding-right: 1rem;
         border-right: 1px solid rgba(white, 0.5)
       }
 
       span {
-        margin-left: 2.5rem;
+        margin-left: 2.25rem;
       }
+    }
+  }
+
+  .no-movies,
+  .no-articles {
+    
+    padding: 2rem;
+
+    img {
+      display: block;
+      margin: 0 auto;
+      opacity: 0.5;
+    }
+
+    span {
+      margin-top: 1rem;
+      color: #888;
+      text-align: center;
+      font-size: 14px;
+      display: block;
+      width: 100%;
     }
   }
 }

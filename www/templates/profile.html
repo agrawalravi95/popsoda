@@ -1,5 +1,5 @@
 <ion-view view-title="Profile">
-	<ion-content class="profile-content has-tabs" lazy-scroll>
+	<ion-content class="profile-content" lazy-scroll>
 		<a class="popsoda-more" id="popsoda-more" ui-sref="more">
 			<i class="ion-android-more-vertical"  ></i>
 		</a>
@@ -7,7 +7,7 @@
 		<div class="profile-container" ng-if="FbLoginToggle">
 			<div class="profile-info-container">
 				<div class="profile-image-container">
-					<img id="profile-image" ng-src="{{user.image}}" alt="User Image" ng-click="selectTab()">
+					<img id="profile-image" ng-src="{{user.image}}" alt="User Image">
 				</div>
 
 				<h3> {{user.name}} </h3>
@@ -18,13 +18,26 @@
 				<div class="profile-movies-container">
 					<div class="profile-movies">
 						<span>Movies Followed</span>
-					</div>
 
-			      <ion-list class="list-inset movie-list" ng-class="{'movie-list--article-hidden' : !searchResultArticlesToggle}">	 
+						<!-- <span class="view-all" ng-click="viewAllMovies()" ng-show="!viewAllMoviesToggle">View All
+					      <i class="icon ion-ios-arrow-forward"></i>
+					    </span>
+
+					    <span ng-show="viewAllMoviesToggle" class="view-all--cancel" ng-click="hideAllMovies()">
+					      <i class="icon ion-android-cancel placeholder-icon cancel-icon"></i>
+					    </span> -->
+					</div>
+				<div class="no-movies" ng-if="!moviesExist">
+					<img src="img/movies.svg" alt="No Movies Icon" >
+
+					<span>Your recently followed movies show up here.</span>
+				</div>
+				
+			    <ion-list class="list-inset movie-list" ng-if="moviesExist">
 			        <ion-item class="movie-recommended" ng-repeat="movie in movies track by movie.movie_id" >
 
 			          <div ng-controller="FollowCtrl">
-			            <h2 ui-sref="movie({movieId: movie.movie_id})">{{ ::movie.movie_name | limitTo: 27}}<span>{{ movie.movie_name.length > 27 ? '...' : ' '}}
+			            <h2 ui-sref="movie({movieId: movie.movie_id})">{{ ::movie.movie_name | limitTo: 36}}<span>{{ movie.movie_name.length > 36 ? '...' : ' '}}
 			            </span>
 			            </h2>
 
@@ -44,7 +57,13 @@
 						<span>Recent Articles Liked</span>
 					</div>
 
-					<ion-list class="article-list">
+					<div class="no-articles" ng-if="!articlesExist">
+						<img src="img/articles.svg" alt="No Movies Icon">
+
+						<span>Your recently liked articles show up here.</span>
+					</div>
+
+					<ion-list class="article-list" ng-if="articlesExist">
 						<ion-item class="article-block" ng-repeat="article in articles track by article.article_id">
 							<h2 ui-sref="article({articleId: article.article_id})"> {{ ::article.title | limitTo: 36}}<span>{{ article.title.length > 36 ? '...' : ' ' }}
 		      				</span></h2>

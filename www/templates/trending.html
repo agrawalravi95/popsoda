@@ -13,8 +13,8 @@
         <div class="movie-detail">
           <div class="followers-container">
             <ion-list class="followers-list">
-              <ion-item class="follower" ng-repeat="follower in followers track by $index">
-                <img ng-src="{{ :: follower.image }}">
+              <ion-item class="follower" ng-repeat="friend in trend.friends track by $index | limitTo: 3">
+                <img ng-src="{{ 'http://graph.facebook.com/' + friend + '/picture?type=small' }}">
               </ion-item>
 
               <span class="followers-count">

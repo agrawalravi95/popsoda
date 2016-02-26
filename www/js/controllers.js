@@ -4,7 +4,13 @@ angular.module('popsoda.controllers', [])
 // Tabs and Slide Controller //
 ///////////////////////////////
 
-.controller('TabSlideCtrl', function($rootScope, $scope, $timeout, $state, $stateParams) {
+.controller('TabSlideCtrl', function($rootScope, $scope, $timeout, $state, $stateParams, $cordovaNetwork) {
+
+  var slider = angular.element(document.querySelector('.slider-slides'));
+  slider.width = "1800px";
+
+  $scope.connectionAvailable = false;
+  $scope.connectionPopupToggle = true;
 
   var slideNo = $stateParams.slideNo || 0,
       searchTag = $stateParams.searchTag || null;
@@ -13,6 +19,39 @@ angular.module('popsoda.controllers', [])
     $timeout(function() {
       $rootScope.$broadcast('tagClicked', {tag: searchTag})
     }, 1000);    
+  };
+
+  var connectionTest = function() {
+      if(window.Connection) {
+        if(navigator.connection.type == Connection.NONE) {
+            console.log('There is no internet connection available');
+            $scope.connectionAvailable = false;
+        }else{
+            console.log('There is internet connection available');
+            $scope.connectionAvailable = true;
+        }
+      }else{
+            console.log('Cannot find Window.Connection');
+      }
+  }
+
+  connectionTest();
+    
+  document.addEventListener("deviceready", function () {
+
+    $rootScope.$on('$cordovaNetwork:online', function(event){
+      console.log("Online");
+      connectionTest();
+    });
+
+    $rootScope.$on('$cordovaNetwork:offline', function(event){
+      connectionTest();
+      console.log("Offline");
+    });
+  }, false);
+
+  $scope.closeConnectionPopup = function() {
+    $scope.connectionPopupToggle = false;
   }
 
 })
@@ -21,7 +60,7 @@ angular.module('popsoda.controllers', [])
 // Welcome Controller //
 ////////////////////////
 
-.controller('WelcomeCtrl', function($scope, $rootScope, $state, $q, User, $ionicLoading) {
+.controller('WelcomeCtrl', function($scope, $rootScope, $timeout, $state, $q, User, $ionicLoading) {
 
   // Initialize user from localstorage
   var loggedIn = false,
@@ -31,12 +70,15 @@ angular.module('popsoda.controllers', [])
   var checkLoginState = function () {
 
     user = User.getUserFbInfo();
-
-    if(user !== undefined && user.hasOwnProperty('status') && user.status == "connected") {  
-
+    if(user !== undefined && user.hasOwnProperty('authResponse') && user.authResponse.session_key == true) {  
+      
+      User.setUser();
       loggedIn = true;
+      $scope.loggedIn = true;
       $scope.$parent.loggedIn = true;
-
+      $timeout(function() {
+        $rootScope.$broadcast('successfulFbLogin');        
+      }, 3000);  
       return true;
     }
 
@@ -47,8 +89,6 @@ angular.module('popsoda.controllers', [])
     User.setUser("0");
 
     // Fix the document width
-    var slider = angular.element(document.querySelector('.slider-slides'));
-    slider.width = "1800px";
 
     return false;
   };
@@ -56,13 +96,14 @@ angular.module('popsoda.controllers', [])
   //Check LogIn at start of application
   checkLoginState();
 
+
+
   //Success call for Facebook log in 
   var fbLoginSuccess = function (userData) {
-      console.log(userData);
-
       var authResponse = userData.authResponse;
 
       getFacebookProfileInfo(authResponse).then(function(profileInfo) {
+
         User.setUserFbInfo({
           'authResponse': authResponse,
           'userID': profileInfo.id,
@@ -73,13 +114,16 @@ angular.module('popsoda.controllers', [])
         });
 
         User.setUserFbInfoAPI();
+        $timeout(function() {
+          $rootScope.$broadcast('successfulFbLogin');        
+        }, 3000); 
       });
 
       loggedIn = true;
       $scope.loggedIn = true;
       $scope.$parent.loggedIn = true;
 
-      // $state.go('tab');
+      
   }
 
   var getFacebookProfileInfo = function (authResponse) {
@@ -87,6 +131,8 @@ angular.module('popsoda.controllers', [])
 
     facebookConnectPlugin.api('/me?fields=email,name,friends&access_token=' + authResponse.accessToken, null,
       function (response) {
+        console.log("Resolving Info");
+        console.log(response);
         info.resolve(response);
       },
       function (response) {
@@ -94,7 +140,6 @@ angular.module('popsoda.controllers', [])
       }
     );
 
-    $rootScope.$broadcast('successfulFbLogin');
     return info.promise;
   };
 
@@ -188,8 +233,9 @@ angular.module('popsoda.controllers', [])
 
   //Check if more articles are available for infinite load
   $scope.moreArticlesAvailable = function() {
-    var articles = Articles.all(),
-        lastObject = articles[articles.length - 1];
+    var articles = Articles.all();
+    if(!articles) return true;
+    var lastObject = articles[articles.length - 1];
 
     if(lastObject && lastObject.hasOwnProperty('result') && lastObject.result == "404") {
       articleLoadAble = true;
@@ -203,8 +249,9 @@ angular.module('popsoda.controllers', [])
 
   //Check if more movies are available for infinite load
   $scope.moreMoviesAvailable = function() {
-    var movies = Movies.all(),
-        lastObject = movies[movies.length - 1];
+    var movies = Movies.all();
+    if(!movies) return true;
+    var lastObject = movies[movies.length - 1];
 
     if(lastObject && lastObject.hasOwnProperty('result') && lastObject.result == "404") {
       movieLoadAble = true;
@@ -353,7 +400,7 @@ angular.module('popsoda.controllers', [])
 // Follow Movies Controller //
 //////////////////////////////
 
-.controller('FollowCtrl',function($scope, $rootScope, $ionicPopup, User, Movies) {
+.controller('FollowCtrl',function($scope, $rootScope, $ionicPopup, $timeout, User, Movies) {
 
 
     // $scope.$on('successfulFbLogin', function(e) {
@@ -368,6 +415,7 @@ angular.module('popsoda.controllers', [])
         movie.follow = 0;
       } 
 
+      $rootScope.$broadcast('movieFollowed');   
       Movies.toggleFollow(User.getUser(), movie.movie_id, movie.follow);
     }
 
@@ -379,16 +427,19 @@ angular.module('popsoda.controllers', [])
 
        confirmPopup.then(function(res) {
          if(res) {
-            $rootScope.$broadcast('fbLoginEvent');
-            followMovie(movie);
-            return true;
+            $rootScope.$broadcast('fbLoginEvent');       
+            $timeout(function() {
+              if(User.getLoginState == true) {
+                followMovie(movie);
+                return true;             
+              }
+              else return false;
+            }, 2000);
          } else {
            return false;
          }
        });
      };  
-
-
     
     $scope.toggleFollow = function(movie) {
       if(User.getLoginState() == false) {
@@ -444,14 +495,16 @@ angular.module('popsoda.controllers', [])
   //Get Feed of Trends
   Trends.getFeed(User.getUser()).then(function (trends) {
     $scope.trends = trends;
+    console.log(trends);
     lastTrend = trends[trends.length - 1].createdon;
     trendLoadAble = true;
   });
 
   //Check for End of Data on Infinite Scroll
   $scope.moreDataAvailable = function() {
-    var trends = Trends.all(),
-        lastObject = trends[trends.length - 1];
+    var trends = Trends.all();
+    if(!trends) return true;
+    var lastObject = trends[trends.length - 1];
 
     //Check for 404 in returned data
     if(lastObject && lastObject.hasOwnProperty('result') && lastObject.result == "404") {
@@ -563,6 +616,7 @@ angular.module('popsoda.controllers', [])
   });
 
   $scope.$on('successfulFbLogin', function(e) {
+    console.log(User.getUserFbInfo());
     var friends = User.getUserFbInfo().friends.data;
         $scope.friends = friends;
         $scope.FbLoginToggle = true;
@@ -710,6 +764,9 @@ angular.module('popsoda.controllers', [])
 .controller('ProfileCtrl', function($scope, $rootScope, User) {
 
   $scope.FbLoginToggle = false;
+  $scope.moviesExist = false;
+  $scope.articlesExist = false;
+  $scope.viewAllMoviesToggle = false;
 
   // Get User Profile Picture and details
   var afterFbLogin = function() {
@@ -720,43 +777,59 @@ angular.module('popsoda.controllers', [])
     };  
 
     $scope.FbLoginToggle = true;
-  
   };
+
+  var getUserMovies = function() {
+    User.getMovies(User.getUser()).then(function(movies) {
+
+      if(movies.hasOwnProperty('result') && movies.result == "404") {
+        return;
+      }
+
+      $scope.moviesExist = true;
+      $scope.movies = movies;
+    });
+  }
+
+  var getUserArticles = function() {
+    User.getArticles(User.getUser()).then(function(articles) {
+
+      if(articles.hasOwnProperty('result') && articles.result == "404") {
+        return;
+      }
+
+      $scope.articlesExist = true;
+      $scope.articles = articles;
+    });
+  }
+
+  getUserMovies();
+  getUserArticles();
+
 
   $scope.$on('successfulFbLogin', function(event) {
     afterFbLogin();
+  });
+
+  $scope.$on('articleLiked', function(event) {
+    getUserArticles();
+  });
+
+  $scope.$on('movieFollowed', function(event) {
+    getUserMovies();
   });
 
   $scope.facebookSignIn = function() {
     $rootScope.$broadcast('fbLoginEvent');
   }
 
-  $scope.movies = [{'movie_id': '123', 'movie_name': 'ABC', 'follow':'1', 'image':'http://placehold.it/180x180'}];
-
-  $scope.articles = [{'article_id': '123', 'title': 'ABC', 'follow':'1', 'hero_image':'http://placehold.it/180x180'}]
-
-
-
-  // beforeFbLogin();
-  
-  
-  //var tab = angular.element(document.querySelector('.profile-info-container'));
-  // console.log(tab);
-  // for (var i = tabs.length - 1; i >= 0; i--) {
-  //   tabs[i].style.borderWidth = '0px 1px 2px 0px';
-  // }
-
-  $scope.selectTab = function() {
-    console.log("Here");
-    $ionicTabsDelegate.select(2);
-  }
 })
 
 /////////////////////////////
 // Movie Detail Controller //
 /////////////////////////////
 
-.controller('MovieCtrl', function($scope, $rootScope, $state, $stateParams, Movies, $cordovaSocialSharing, $ionicScrollDelegate){
+.controller('MovieCtrl', function($scope, $rootScope, $state, $stateParams, Movies, User, $cordovaSocialSharing, $ionicScrollDelegate){
 
   $scope.movie = Movies.get($stateParams.movieId);
 
@@ -847,13 +920,12 @@ angular.module('popsoda.controllers', [])
 // Article Detail Controller //
 ///////////////////////////////
 
-.controller('ArticleCtrl', function($scope, $rootScope, $stateParams, $ionicPopup, Articles, $cordovaSocialSharing, $sce, $ionicScrollDelegate, User){
+.controller('ArticleCtrl', function($scope, $rootScope, $stateParams, $ionicPopup, $timeout, Articles, $cordovaSocialSharing, $sce, $ionicScrollDelegate, User){
 
     var YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/";
     
-    $scope.article = Articles.get($stateParams.articleId);
     Articles.getDetails(User.getUser(), $stateParams.articleId).then(function (articleDetail) {
-
+      $scope.article = articleDetail;
       $scope.videoWidth = window.screen.width;
       $scope.title = articleDetail.title;
       $scope.content = articleDetail.content;
@@ -931,7 +1003,14 @@ angular.module('popsoda.controllers', [])
        confirmPopup.then(function(res) {
          if(res) {
             $rootScope.$broadcast('fbLoginEvent');
-            likeArticleToggle();
+            $timeout(function() {
+              if(User.getLoginState == true) {
+                likeArticleToggle();   
+                return true;             
+              }
+              else return false;
+            }, 2000);
+
             return true;
          } else {
            return false;
@@ -947,8 +1026,9 @@ angular.module('popsoda.controllers', [])
         $scope.likes++;
         $scope.userLike = 1;
       }
-
-    Articles.toggleLike(User.getUser(), $stateParams.articleId, $scope.userLike);
+      
+      $rootScope.$broadcast('articleLikeToggled');   
+      Articles.toggleLike(User.getUser(), $stateParams.articleId, $scope.userLike);
     }
 
     $scope.tagClick = function(tag){
@@ -958,7 +1038,7 @@ angular.module('popsoda.controllers', [])
     var articleHeader = angular.element(document.querySelector('.article-header'));
 
 
-    $scope.scrollHandler = function (argument) {
+    $scope.scrollHandler = function () {
       if($ionicScrollDelegate.getScrollPosition().top >= 80) {
         articleHeader.addClass('scrolled');
 

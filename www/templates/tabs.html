@@ -1,4 +1,10 @@
 <ion-content scroll="false">
+  <div class="no-connection-overlay" ng-show="!connectionAvailable && connectionPopupToggle">
+    <div class="no-connection-popup">
+      <span> Sorry, but you don't seem to be connected to the internet.</span>
+    </div>
+    <i class="ion-ios-close-outline close-icon" ng-click="closeConnectionPopup()"></i>
+  </div>
 
   <ion-view ng-hide="loggedIn == true" ng-include="'templates/welcome.html'" ng-controller="WelcomeCtrl" class="welcome-content" view-title="Welcome"></ion-view> 
   

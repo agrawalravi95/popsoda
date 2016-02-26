@@ -13,7 +13,7 @@
 		</div>
 
 		<div class="video-container" ng-if="hasVideo">
-			<iframe width="{{videoWidth}}" height="180" ng-src="{{video}}" frameborder="0" allowfullscreen></iframe>
+			<iframe width="{{videoWidth}}" height="180" ng-src="{{video}}" frameborder="0" fs=0></iframe>
 
 			<h2 class="article-title"> {{ ::title }}</h2>
 		</div>
@@ -21,7 +21,7 @@
 		<div class="article-details">
 			<div class="source">
 				<i class="icon ion-social-rss"></i>
-				{{ :: source }}
+				{{ :: source | limitTo: 15}}<span>{{ source.length > 15 ? '...' : ' ' }} </span>
 			</div>
 
 			<div class="time">
@@ -31,8 +31,8 @@
 
 			<div class="likes">
 				<span ng-click="likeArticle()">
-					<i class="icon ion-ios-heart-outline" ng-class="{'ion-ios-heart' : userLike == 1}"></i>
-					{{ :: likes }}
+					<i class="icon" ng-class="{'ion-ios-heart liked' : userLike == 1, 'ion-ios-heart-outline' : userLike == 0}"></i>
+					{{ likes }}
 				</span>
 			</div>
 		</div>
@@ -41,9 +41,9 @@
 
    	<div ng-controller="FollowCtrl" class="follow-container">
 			
-			<h2 class="article-movie-name"> {{ :: movieName }} </h2>
+			<h2 class="article-movie-name"> {{ :: movieName | limitTo: 36}}<span>{{ movieName.length > 36 ? '...' : ' ' }} </span> </h2>
 
-      <a class="followBtn" ng-class="{ follow : trend.follow == 0, following: trend.follow == 1 }" ng-click="toggleFollow(trend)" name="followBtn"> {{ trend.follow == 1 ? "Following" : "Follow" }} </a>
+      <a class="followBtn" ng-class="{ follow : article.follow == 0, following: article.follow == 1 }" ng-click="toggleFollow(article)" name="followBtn"> {{ article.follow == 1 ? "Following" : "Follow" }} </a>
     </div>
 
 		<div class="tags-container">
