@@ -1,90 +1,81 @@
-<ion-view view-title="Profile">
-	<ion-content class="profile-content" lazy-scroll>
-		<a class="popsoda-more" id="popsoda-more" ui-sref="more">
-			<i class="ion-android-more-vertical"  ></i>
-		</a>
 
-		<div class="profile-container" ng-if="FbLoginToggle">
-			<div class="profile-info-container">
-				<div class="profile-image-container">
-					<img id="profile-image" ng-src="{{user.image}}" alt="User Image">
-				</div>
+<ion-content class="profile-content">
+	<a class="popsoda-more" id="popsoda-more" ui-sref="more">
+		<i class="ion-android-more-vertical"></i>
+	</a>
 
-				<h3> {{user.name}} </h3>
+	<div class="profile-container" ng-if="FbLoginToggle">
+		<div class="profile-info-container">
+			<div class="profile-image-container">
+				<img id="profile-image" ng-src="{{user.image}}" alt="User Image">
 			</div>
 
-			<div class="profile-details-container">
-			
-				<div class="profile-movies-container">
-					<div class="profile-movies">
-						<span>Movies Followed</span>
+			<h3> {{user.name}} </h3>
+		</div>
 
-						<!-- <span class="view-all" ng-click="viewAllMovies()" ng-show="!viewAllMoviesToggle">View All
-					      <i class="icon ion-ios-arrow-forward"></i>
-					    </span>
-
-					    <span ng-show="viewAllMoviesToggle" class="view-all--cancel" ng-click="hideAllMovies()">
-					      <i class="icon ion-android-cancel placeholder-icon cancel-icon"></i>
-					    </span> -->
-					</div>
-				<div class="no-movies" ng-if="!moviesExist">
-					<img src="img/movies.svg" alt="No Movies Icon" >
-
-					<span>Your recently followed movies show up here.</span>
+		<div class="profile-details-container">
+		
+			<div class="profile-movies-container">
+				<div class="profile-movies">
+					<span>Movies Followed</span>
 				</div>
+			<div class="no-movies" ng-if="!moviesExist">
+				<img src="img/movies.svg" alt="No Movies Icon" >
+
+				<span>Your recently followed movies show up here.</span>
+			</div>
+			
+		    <ion-list class="list-inset movie-list" ng-if="moviesExist">
+		        <ion-item class="movie-recommended" ng-repeat="movie in movies track by movie.movie_id" >
+
+		          <div ng-controller="FollowCtrl">
+		            <h2 ui-sref="movie({movieId: movie.movie_id})">{{ ::movie.movie_name | limitTo: 36}}<span>{{ movie.movie_name.length > 36 ? '...' : ' '}}
+		            </span>
+		            </h2>
+
+		            <a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie)" name="followBtn"> </a>
+
+		            <div class="overlay" ></div>
+
+		            <img ng-src="{{ ::movie.image }}" class="movie-img" ui-sref="movie({movieId: movie.movie_id})">
+		          </div>
+		        </ion-item>  
+		      </ion-list>
+		    </div>
+
+		    <div class="profile-articles-container">
 				
-			    <ion-list class="list-inset movie-list" ng-if="moviesExist">
-			        <ion-item class="movie-recommended" ng-repeat="movie in movies track by movie.movie_id" >
-
-			          <div ng-controller="FollowCtrl">
-			            <h2 ui-sref="movie({movieId: movie.movie_id})">{{ ::movie.movie_name | limitTo: 36}}<span>{{ movie.movie_name.length > 36 ? '...' : ' '}}
-			            </span>
-			            </h2>
-
-			            <a class="followBtn" ng-class="{ follow : movie.follow == 0, following: movie.follow == 1 }" ng-click="toggleFollow(movie)" name="followBtn"> </a>
-
-			            <div class="overlay" ></div>
-
-			            <img image-lazy-src="{{ ::movie.image }}" image-lazy-distance-from-bottom-to-load="300" class="movie-img" ui-sref="movie({movieId: movie.movie_id})">
-			          </div>
-			        </ion-item>  
-			      </ion-list>
-			    </div>
-
-			    <div class="profile-articles-container">
-					
-					<div class="profile-articles">
-						<span>Recent Articles Liked</span>
-					</div>
-
-					<div class="no-articles" ng-if="!articlesExist">
-						<img src="img/articles.svg" alt="No Movies Icon">
-
-						<span>Your recently liked articles show up here.</span>
-					</div>
-
-					<ion-list class="article-list" ng-if="articlesExist">
-						<ion-item class="article-block" ng-repeat="article in articles track by article.article_id">
-							<h2 ui-sref="article({articleId: article.article_id})"> {{ ::article.title | limitTo: 36}}<span>{{ article.title.length > 36 ? '...' : ' ' }}
-		      				</span></h2>
-							<div class="overlay"></div>
-							<img image-lazy-src="{{ article.hero_image.length < 1 ? 'http://img.youtube.com/vi/' + article.hero_video_url + '/0.jpg' : article.hero_image }}" image-lazy-distance-from-bottom-to-load="300" image-lazy-loader="crescent" class="article-img" ui-sref="article({articleId: article.article_id})">
-						</ion-item>
-					</ion-list>
+				<div class="profile-articles">
+					<span>Recent Articles Liked</span>
 				</div>
+
+				<div class="no-articles" ng-if="!articlesExist">
+					<img src="img/articles.svg" alt="No Movies Icon">
+
+					<span>Your recently liked articles show up here.</span>
+				</div>
+
+				<ion-list class="article-list" ng-if="articlesExist">
+					<ion-item class="article-block" ng-repeat="article in articles track by article.article_id">
+						<h2 ui-sref="article({articleId: article.article_id})"> {{ ::article.title | limitTo: 36}}<span>{{ article.title.length > 36 ? '...' : ' ' }}
+	      				</span></h2>
+						<div class="overlay"></div>
+						<img ng-src="{{ article.hero_image.length < 1 ? 'http://img.youtube.com/vi/' + article.hero_video_url + '/0.jpg' : article.hero_image }}" class="article-img" ui-sref="article({articleId: article.article_id})">
+					</ion-item>
+				</ion-list>
 			</div>
 		</div>
+	</div>
 
-		<div class="profile-container--empty" ng-if="!FbLoginToggle">
-			
-			<div class="empty-message">
-				<i class="ion-social-reddit-outline"></i>
-			Please log in to create a profile! </div>
+	<div class="profile-container--empty" ng-if="!FbLoginToggle">
+		
+		<div class="empty-message">
+			<i class="ion-social-reddit-outline"></i>
+		Please log in to create a profile! </div>
 
-			<a class="facebook-sign-in" ng-click="facebookSignIn()">
-				<i class="ion-social-facebook"></i>
-				<span>Login with Facebook</span></a>
-		</div>
-	
-	</ion-content>
-</ion-view>
+		<a class="facebook-sign-in" ng-click="facebookSignIn()">
+			<i class="ion-social-facebook"></i>
+			<span>Login with Facebook</span></a>
+	</div>
+
+</ion-content>

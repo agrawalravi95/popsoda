@@ -23,14 +23,14 @@
 	  </ion-list>
 		
 		<div class="search-none" ng-if="searchResultClick">
-			<div class="search-friends" ng-hide="showGenresToggle || !FbLoginToggle">
+			<!-- <div class="search-friends" ng-hide="showGenresToggle || !FbLoginToggle">
 				<span>Movies your friends follow</span>
 
 				<div class="followers-container">
 					<img ng-src="{{ 'http://graph.facebook.com/' + friend.id + '/picture?type=small'}}" ng-repeat="friend in friends | limitTo:3">
 					<i class="ion-chevron-right"></i>
 				</div>
-			</div>
+			</div> -->
 
 			<div class="search-genre" ng-class="{'search-genre--minimized': !showGenresToggle}">
 				<span class="title" ng-hide="showGenresToggle" ng-click="showGenres()">Movies by Genre</span>

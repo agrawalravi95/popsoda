@@ -84,11 +84,9 @@ angular.module('popsoda.services', [])
 
     return $http(req).
     then(function successCallback(response) {
-      console.log(response);
       userID = response.data.user_id;
       window.localStorage.userID = userID;
     }, function errorCallback(response) {
-      console.log(response);
     });
   }
 
@@ -102,7 +100,6 @@ angular.module('popsoda.services', [])
     }, 
     function errorCallback() {
       userMovies = JSON.parse(window.localStorage.getItem('localUserMovies'));
-      console.log("Fetched from local");
       return userMovies;
     });
   }
@@ -117,7 +114,6 @@ angular.module('popsoda.services', [])
     }, 
     function errorCallback() {
       userArticles = JSON.parse(window.localStorage.getItem('localUserArticles'));
-      console.log("Fetched from local");
       return userArticles;
     });
   }
@@ -148,7 +144,6 @@ angular.module('popsoda.services', [])
       }
       else {
         movies = JSON.parse(window.localStorage.getItem('localMovies'));
-        console.log("Fetched from local");
         return movies;
       }
     },
@@ -174,9 +169,6 @@ angular.module('popsoda.services', [])
     },
 
     toggleFollow: function(user_id, movieId, follow) {
-      console.log(user_id);
-      console.log(movieId);
-      console.log(follow);
       var req = {
         method: 'POST',
         url: 'https://popsoda.mobi/api/index.php/follow',
@@ -195,9 +187,7 @@ angular.module('popsoda.services', [])
 
       return $http(req)
       .then(function successCallback(response) {
-        console.log(response);
       }, function errorCallback(response) {
-        console.log(response);
       })
     },
 
@@ -212,7 +202,6 @@ angular.module('popsoda.services', [])
       }, 
       function errorCallback() {
         movies = JSON.parse(window.localStorage.getItem('localMovies'));
-        console.log("Fetched from local");
         return movies;
       });
     },
@@ -225,7 +214,6 @@ angular.module('popsoda.services', [])
       return $http.get("https://popsoda.mobi/api/index.php/home/allmovie/" + user_id +"/" + lastMovie + "/10").then(function(response){
         var newMovies = response.data;
         movies = movies.concat(newMovies);
-        console.log(lastMovie);
         return newMovies;
       });
     }
@@ -244,7 +232,6 @@ angular.module('popsoda.services', [])
       }
       else {
         articles = JSON.parse(window.localStorage.getItem('localArticles'));
-        console.log("Fetched from local");
         return articles;
       }
     },
@@ -276,7 +263,6 @@ angular.module('popsoda.services', [])
       }, 
       function errorCallback() {
         articles = JSON.parse(window.localStorage.getItem('localArticles'));
-        console.log("Fetched from local");
         return articles;
       });
     },
@@ -342,9 +328,7 @@ angular.module('popsoda.services', [])
 
       return $http(req)
       .then(function successCallback(response) {
-        console.log(response);
       }, function errorCallback(response) {
-        console.log(response);
       })
     }
   }
@@ -369,7 +353,6 @@ angular.module('popsoda.services', [])
       }
       else {
         trends = JSON.parse(window.localStorage.getItem('localTrends'));
-        console.log("Fetched from local");
         return trends;
       }
     },
@@ -382,9 +365,7 @@ angular.module('popsoda.services', [])
         for (var i = trends.length - 1; i >= 0; i--) {
           trends[i].tweet1.color = getRandomColor();
           trends[i].tweet2.color = getRandomColor();
-          console.log(trends[i].mutual_friends_follow);
           trends[i].friends = trends[i].mutual_friends_follow.split(',');
-          console.log(trends[i].friends);
         };
 
         window.localStorage.removeItem('localTrends');
@@ -398,12 +379,9 @@ angular.module('popsoda.services', [])
         for (var i = trends.length - 1; i >= 0; i--) {
           trends[i].tweet1.color = getRandomColor();
           trends[i].tweet2.color = getRandomColor();
-          console.log(trends[i].mutual_friends_follow);
           trends[i].friends = trends[i].mutual_friends_follow.split(',');
-          console.log(trends[i].friends);
         };
 
-        console.log("Fetched from local");
         return trends;
       });
     },
@@ -418,7 +396,7 @@ angular.module('popsoda.services', [])
         for (var i = newTrends.length - 1; i >= 0; i--) {
           newTrends[i].tweet1.color = getRandomColor();
           newTrends[i].tweet2.color = getRandomColor();
-          trends[i].friends = trends[i].mutual_friends_follow.split(',');
+          newTrends[i].friends = trends[i].mutual_friends_follow.split(',');
         };
 
         trends = trends.concat(newTrends);
@@ -470,7 +448,6 @@ angular.module('popsoda.services', [])
       },
       function errorCallback(response) {
         trailers = JSON.parse(window.localStorage.getItem('localTrailers')); 
-        console.log("Fetched from local");
         return trailers;
     });
   };
@@ -531,7 +508,6 @@ angular.module('popsoda.services', [])
 
       for (var i = genres.length - 1; i >= 1; i--) {
         str = str + genres[i] + ',';
-        console.log(str);
       };
 
       str = str + genres[i];
@@ -551,7 +527,7 @@ angular.module('popsoda.services', [])
       return $http.get("https://popsoda.mobi/api/index.php/recommend").then(function(response) {
         return response.data;
       }, function(response) {
-        console.log("Error: "+ response.data);
+        console.error("Failed to fetch recommended articles at the moment.");
       });
     }
 

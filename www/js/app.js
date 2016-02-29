@@ -22,6 +22,14 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
   $ionicConfigProvider.views.maxCache(5);
   $ionicConfigProvider.scrolling.jsScrolling(false);
   $ionicNativeTransitionsProvider.enable(true);
+  $ionicNativeTransitionsProvider.setDefaultTransition({
+        type: 'slide',
+        direction: 'left'
+    });
+  $ionicNativeTransitionsProvider.setDefaultBackTransition({
+        type: 'slide',
+        direction: 'right'
+    });
   $ionicNativeTransitionsProvider.setDefaultOptions({
         duration: 400, // in milliseconds (ms), default 400,
         slowdownfactor: 4, // overlap views (higher number is more) or no overlap (1), default 4
@@ -47,6 +55,10 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
     url: '/',
     templateUrl: 'templates/tabs.html',
     controller: 'TabSlideCtrl',
+    nativeTransitions: {
+      "type": "slide",
+      "direction": "right"
+    },
     params: {
       slideNo: null,
       searchTag: null
@@ -60,6 +72,10 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
         controller: 'MovieCtrl'
       }
     },
+    nativeTransitions: {
+      "type": "slide",
+      "direction": "left"
+    },
     params: {
       movieId: null
     }
@@ -72,6 +88,10 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
         controller: 'ArticleCtrl'
       }
     },
+    nativeTransitions: {
+      "type": "slide",
+      "direction": "left"
+    },
     params: {
       articleId: null
     }
@@ -83,7 +103,11 @@ angular.module('popsoda', ['ionic', 'ionic-native-transitions' ,'angucomplete-al
         templateUrl: 'templates/more.html',
         controller: 'MoreCtrl'
       }
-    }
+    },
+    nativeTransitions: {
+      "type": "slide",
+      "direction": "left"
+    },
   });
 
   // if none of the above states are matched, use this as the fallback

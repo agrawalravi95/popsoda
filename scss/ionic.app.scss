@@ -1027,6 +1027,7 @@ ion-slide {
 
       a.followBtn,
       a.following {
+        font-family: 'montserratregular';
         float: right;
         text-transform: uppercase;
         font-size: 11px;
@@ -1194,6 +1195,7 @@ ion-slide {
 
       a.followBtn,
       a.following {
+        font-family: 'montserratregular';
         text-transform: uppercase;
         font-size: 11px;
         font-weight: bold;
@@ -1246,6 +1248,10 @@ ion-slide {
             background: none;
             border: none;
             margin-right: 5px;
+
+            &.follower-none {
+              display: none;
+            }
 
             img {
               border-radius: 50%;
@@ -1485,6 +1491,10 @@ ion-slide {
           border: none;
           margin-right: 5px;
 
+          &.follower-none {
+            opacity: 0;
+          }
+
           img {
             border-radius: 50%;
             max-height: 35px;
@@ -1599,11 +1609,11 @@ ion-slide {
         position: absolute;
         left: -50px;
         top: 17px;
-        font-size: 14px;
-        font-weight: bold;
+        font-size: 12px;
+        font-family: 'montserratbold';
         background: #FFFFFF;
         border-radius: 3px;
-        padding: 3px 3px;
+        padding: 4px;
         width: 35px;
         text-align: center;
         box-shadow: 1px 1px 1px rgba(black, 0.2);
@@ -1771,7 +1781,6 @@ ion-slide {
 
 //Profile Section
 .profile-content {
-  position: relative;
 
   .scroll {
     background: #f7f7f7;    
@@ -1783,7 +1792,15 @@ ion-slide {
     right: .75rem;
     font-size: 16pt;
     color: rgba(black, 0.7);
-    padding: 1rem;
+    width: 3rem;
+    height: 3rem;
+    padding: .25rem;
+    text-align: center;
+
+    i {
+      position: relative;
+      top: 0.5rem;
+    }
   }
 
   .profile-info-container {
@@ -1875,6 +1892,10 @@ ion-slide {
       display: block;
       width: 100%;
     }
+  }
+
+  .profile-articles-container {
+    padding-bottom: 3rem;
   }
 }
 

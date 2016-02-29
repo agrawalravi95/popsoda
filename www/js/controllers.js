@@ -415,7 +415,7 @@ angular.module('popsoda.controllers', [])
         movie.follow = 0;
       } 
 
-      $rootScope.$broadcast('movieFollowed');   
+      $rootScope.$broadcast('movieFollowToggled');   
       Movies.toggleFollow(User.getUser(), movie.movie_id, movie.follow);
     }
 
@@ -639,9 +639,7 @@ angular.module('popsoda.controllers', [])
     {'tag_name' : 'Thriller', 'tag_id' : '28', 'selected' : false},
     {'tag_name' : 'Biography', 'tag_id' : '52', 'selected' : false},
     {'tag_name' : 'Crime', 'tag_id' : '99', 'selected' : false},
-    {'tag_name' : 'Mystery', 'tag_id' : '186', 'selected' : false},
-    {'tag_name' : 'War', 'tag_id' : '61', 'selected' : false},
-    {'tag_name' : 'Fantasy', 'tag_id' : '89', 'selected' : false}],
+    {'tag_name' : 'War', 'tag_id' : '61', 'selected' : false}]
   };
 
   Searches.getRecommendedArticles().then(function(articles) {
@@ -761,7 +759,7 @@ angular.module('popsoda.controllers', [])
 // Profile Controller //
 ////////////////////////
 
-.controller('ProfileCtrl', function($scope, $rootScope, User) {
+.controller('ProfileCtrl', function($scope, $rootScope, $timeout, User) {
 
   $scope.FbLoginToggle = false;
   $scope.moviesExist = false;
@@ -776,13 +774,19 @@ angular.module('popsoda.controllers', [])
       'name' : user.name
     };  
 
-    $scope.FbLoginToggle = true;
+    $timeout(function() {
+      getUserMovies();
+      getUserArticles(); 
+      $scope.FbLoginToggle = true;
+    }, 100);
+
   };
 
   var getUserMovies = function() {
     User.getMovies(User.getUser()).then(function(movies) {
 
       if(movies.hasOwnProperty('result') && movies.result == "404") {
+        $scope.moviesExist = false;
         return;
       }
 
@@ -794,7 +798,10 @@ angular.module('popsoda.controllers', [])
   var getUserArticles = function() {
     User.getArticles(User.getUser()).then(function(articles) {
 
+      console.log(articles);
+      
       if(articles.hasOwnProperty('result') && articles.result == "404") {
+        $scope.articlesExist = false;
         return;
       }
 
@@ -811,11 +818,13 @@ angular.module('popsoda.controllers', [])
     afterFbLogin();
   });
 
-  $scope.$on('articleLiked', function(event) {
+  $scope.$on('articleLikeToggled', function(event) {
+    console.log("Liked and executed");
     getUserArticles();
   });
 
-  $scope.$on('movieFollowed', function(event) {
+  $scope.$on('movieFollowToggled', function(event) {
+    console.log("Followed and executed");
     getUserMovies();
   });
 
@@ -840,6 +849,9 @@ angular.module('popsoda.controllers', [])
     $scope.cast = movieDetail.actors;
     $scope.tags = movieDetail.tags;
     $scope.articles = movieDetail.related_articles;
+
+    $scope.friends = movieDetail.mutual_friends_follow.split(',');
+
 
     setTimeout(function() {
       $scope.image = movieDetail.image;
